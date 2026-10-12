@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../Css/profile.css';
 import StockStatusModal from '../Components/StockStatusModal';
 import supabase from '../supabase';
+import couldImg from '../assets/could.png';
+import avaterImg from '../assets/avater.png';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -57,10 +59,10 @@ export default function Profile() {
       </header>
       <main>
         <div className="container">
-          <img className='could' src="../could.png" alt="" />
+          <img className='could' src={couldImg} alt="Clouds Cover" />
           <Link to="/" style={{ textDecoration: 'none' }}>
           <button className='follow'> Inventory App <i className="fa-solid fa-plus"></i> </button></Link>
-          <img className='avater' src="../avater.png" alt="" />
+          <img className='avater' src={avaterImg} alt="Avatar" />
           <p className='started'>Started At 2026</p>
           <h1 className='name'>Sanjay</h1>
           <p className='info'>Manage and monitor your inventory efficiently in one place. Track stock levels, manage product details, monitor incoming and outgoing items, and stay updated on stock availability.</p>
