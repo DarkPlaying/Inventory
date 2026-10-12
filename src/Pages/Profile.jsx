@@ -90,9 +90,10 @@ export default function Profile() {
 
       
 
-      {showStatusModal && (
-        <StockStatusModal onClose={() => setShowStatusModal(false)} />
-      )}
+      <StockStatusModal
+        isOpen={showStatusModal}
+        onClose={() => setShowStatusModal(false)}
+      />
     </div>
   );
 }

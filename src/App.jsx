@@ -7,18 +7,21 @@ import Business from './Pages/Business'
 import Search from './Components/Search'
 import StockNotification from './Components/StockNotification'
 import Profile from './Pages/Profile'
+import SwipeToReload from './Components/SwipeToReload'
 
 function App() {
   return (
     <HashRouter>
-      <StockNotification />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/menu" element={<Menu />} />
-        <Route path="/business" element={<Business />} />
-        <Route path="/search" element={<Search />} />
-        <Route path='/profile' element={<Profile/>}></Route>
-      </Routes>
+      <SwipeToReload>
+        <StockNotification />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/business" element={<Business />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </SwipeToReload>
     </HashRouter>
   )
 }
