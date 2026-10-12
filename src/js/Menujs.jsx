@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import supabase from "../supabase";
 import Swal from "sweetalert2";
+import { sendStockChangeNotification } from "./notificationService";
 
 export function useMenuLogic() {
   const [items, setItems] = useState([]);
@@ -76,7 +77,14 @@ export function useMenuLogic() {
     setItems(prev => prev.map(item => item.id === id ? { ...item, count: newCount, status } : item));
 
     const { error } = await supabase.from('items').update({ quantity: newCount }).eq('id', id);
-    if (error) showToast('Error updating item: ' + error.message, 'error');
+    if (error) {
+      showToast('Error updating item: ' + error.message, 'error');
+    } else {
+      sendStockChangeNotification(
+        '🔄 Stock Updated',
+        `"${currentItem.name}" quantity changed to ${newCount}.`
+      );
+    }
   };
 
   // Delete item with SweetAlert confirm dialog
@@ -97,6 +105,10 @@ export function useMenuLogic() {
       if (error) {
         Swal.fire({ icon: 'error', title: 'Error', text: error.message });
       } else {
+        sendStockChangeNotification(
+          '🗑️ Stock Removed',
+          `"${name}" was removed from inventory.`
+        );
         Swal.fire({
           icon: 'success',
           title: 'Deleted!',
@@ -144,6 +156,10 @@ export function useMenuLogic() {
     if (error) {
       Swal.fire({ icon: 'error', title: 'Error', text: error.message });
     } else {
+      sendStockChangeNotification(
+        '📦 New Stock Added',
+        `"${form.name}" was added to inventory (${form.quantity} units).`
+      );
       Swal.fire({
         icon: 'success',
         title: 'Item Added!',
@@ -198,6 +214,10 @@ export function useMenuLogic() {
           text: error.message
         });
       } else {
+        sendStockChangeNotification(
+          '📊 Excel Stock Import',
+          `Successfully added ${rows.length} items from Excel!`
+        );
         Swal.fire({
           icon: 'success',
           title: 'Excel Upload Success!',

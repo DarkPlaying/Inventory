@@ -2,13 +2,14 @@ body {
   margin: 0;
   padding: 0;
   color: black;
-  font-family: fantasy;
+  font-family: var(--app-font);
 }
 
 .menu-page {
+  padding-top: max(15px, calc(env(safe-area-inset-top) + 10px));
   padding: 10px;
   padding-bottom: calc(85px + env(safe-area-inset-bottom));
-  font-family: fantasy;
+  font-family: var(--app-font);
   min-height: 100vh;
   box-sizing: border-box;
   background: url("https://i.pinimg.com/736x/56/17/d6/5617d6088a5794f177425ae6780041dd.jpg");
@@ -32,7 +33,7 @@ body {
   align-items: center;
   gap: 6px;
   background: rgba(255, 255, 255, 0.7);
-  font-family: fantasy;
+  font-family: var(--app-font);
   font-size: 14px;
   height: 36px;
   padding: 0 12px;
@@ -104,12 +105,12 @@ body {
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: 15px;
   border: 1px solid rgba(118, 118, 118, 0.6);
-  font-family: fantasy;
+  font-family: var(--app-font);
   font-size: 14px;
 }
 
 .search input::placeholder {
-  font-family: fantasy;
+  font-family: var(--app-font);
   color: black;
 }
 
@@ -122,7 +123,7 @@ body {
 
 
 .menu-page .category button {
-  font-family: fantasy;
+  font-family: var(--app-font);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -222,7 +223,7 @@ body {
   flex-direction: column;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
   color: white;
-  font-family: fantasy;
+  font-family: var(--app-font);
   height: 110px;
 }
 
@@ -329,7 +330,7 @@ body {
 }
 
 .menu-page .footer {
-  font-family: fantasy;
+  font-family: var(--app-font);
   position: fixed;
   bottom: max(10px, env(safe-area-inset-bottom));
   left: 10px;
@@ -357,7 +358,7 @@ body {
 }
 
 .menu-page .footer button {
-  font-family: fantasy;
+  font-family: var(--app-font);
   display: flex;
   justify-content: center;
   align-items: center;

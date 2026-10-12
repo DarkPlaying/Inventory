@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import supabase from '../supabase';
+import { sendStockChangeNotification } from './notificationService';
 
 export function useSearchLogic() {
   const [query, setQuery] = useState('');
@@ -52,6 +53,10 @@ export function useSearchLogic() {
       console.error('Error updating quantity:', error.message);
     } else {
       setItems(prev => prev.map(x => x.id === id ? { ...x, quantity: newQty, status: newStatus } : x));
+      sendStockChangeNotification(
+        '🔄 Stock Updated',
+        `"${item.name || 'Item'}" quantity changed to ${newQty}.`
+      );
     }
   };
 

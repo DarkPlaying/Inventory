@@ -48,17 +48,7 @@ export function useHomeLogic() {
           return `${names[0]}, ${names[1]}..`
         }
 
-        // Show starting popup 1 time only per session
-        const hasSeenAlert = sessionStorage.getItem('hasSeenOutOfStockAlert')
-        if (!hasSeenAlert) {
-          if (outItems.length > 0) {
-            showToast(`Out of stock: ${formatNames(outItems)}`, "error")
-            sessionStorage.setItem('hasSeenOutOfStockAlert', 'true')
-          } else if (lowItems.length > 0) {
-            showToast(`Low stock: ${formatNames(lowItems)}`, "warning")
-            sessionStorage.setItem('hasSeenOutOfStockAlert', 'true')
-          }
-        }
+        // No automatic popup alert on page load/refresh
       } else if (error) {
         showToast("Error fetching items: " + error.message, "error")
       }

@@ -1,42 +1,64 @@
-import { useEffect, useState } from 'react';
-import { useStockStatus } from '../js/useStockStatus';
+import { useEffect, useRef } from 'react';
+import { supabase } from '../supabase';
 import {
-  sendStockAlertNotification,
-  scheduleDailyStockNotification,
-  checkNotificationPermission
+  sendStockChangeNotification,
+  checkAndTriggerDailyStockNotification
 } from '../js/notificationService';
 
 /**
  * Headless Background Component:
- * Listens for stock changes and sends device-level outside notifications
- * (in Android notification tray / status bar) when stock is low or out,
- * and maintains daily scheduled notifications.
- * Renders NO inside UI banner.
+ * - Maintains 1x per day stock notification (never triggers on page reload / refresh).
+ * - Sends device notification when database stocks are ADDED, UPDATED, or REMOVED in realtime.
+ * - Suppresses initial notifications during app startup.
  */
 export default function StockNotification() {
-  const { out, low, outItems, lowItems } = useStockStatus();
-  const [lastSentKey, setLastSentKey] = useState('');
+  const isFirstLoad = useRef(true);
 
-  // Schedule daily notification once permission is active
+  // 1. Once-per-day stock notification check
   useEffect(() => {
-    async function initDaily() {
-      const hasPerm = await checkNotificationPermission();
-      if (hasPerm) {
-        await scheduleDailyStockNotification();
-      }
-    }
-    initDaily();
+    checkAndTriggerDailyStockNotification();
   }, []);
 
-  // When low or out-of-stock items exist or count changes, send external device notification
+  // 2. Listen to database realtime changes (INSERT, UPDATE, DELETE)
+  // Realtime changes ONLY fire when database actually changes, NEVER on page load or refresh!
   useEffect(() => {
-    const currentKey = `${out}-${low}`;
-    if ((out > 0 || low > 0) && currentKey !== lastSentKey) {
-      setLastSentKey(currentKey);
-      sendStockAlertNotification(out, low, outItems, lowItems);
-    }
-  }, [out, low, outItems, lowItems, lastSentKey]);
+    const timer = setTimeout(() => {
+      isFirstLoad.current = false;
+    }, 1500);
 
-  // Pure background service, returns no in-app UI banner
+    const channel = supabase
+      .channel('realtime-stock-notifications')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'items' }, (payload) => {
+        if (!isFirstLoad.current && payload.new) {
+          sendStockChangeNotification(
+            '📦 New Stock Added',
+            `"${payload.new.name || 'Item'}" was added to inventory (${payload.new.quantity ?? ''} units).`
+          );
+        }
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'items' }, (payload) => {
+        if (!isFirstLoad.current && payload.new) {
+          sendStockChangeNotification(
+            '🔄 Stock Updated',
+            `"${payload.new.name || 'Item'}" quantity changed to ${payload.new.quantity}.`
+          );
+        }
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'items' }, () => {
+        if (!isFirstLoad.current) {
+          sendStockChangeNotification(
+            '🗑️ Stock Removed',
+            'An item was removed from inventory.'
+          );
+        }
+      })
+      .subscribe();
+
+    return () => {
+      clearTimeout(timer);
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   return null;
 }

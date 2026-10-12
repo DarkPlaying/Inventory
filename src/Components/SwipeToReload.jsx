@@ -20,7 +20,6 @@ export default function SwipeToReload({ children }) {
       const currentY = e.touches[0].clientY;
       const currentX = e.touches[0].clientX;
       const diffY = touchStartY.current - currentY; // positive = swipe up
-      const diffDown = currentY - touchStartY.current; // positive = pull down
       const diffX = Math.abs(currentX - touchStartX.current);
 
       // Ignore if user is mainly swiping horizontally
@@ -29,16 +28,9 @@ export default function SwipeToReload({ children }) {
         return;
       }
 
-      // Check for swipe up:
-      // Trigger when scrolling near the bottom or on non-scrollable viewports
-      const isAtBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 30;
-      const isShortPage = document.documentElement.scrollHeight <= window.innerHeight + 50;
-
-      if ((isAtBottom || isShortPage) && diffY > 60) {
+      // Only trigger reload when user swipes UP
+      if (diffY > 65) {
         setPullDistance(Math.min(diffY, 100));
-      } else if (window.scrollY <= 0 && diffDown > 60) {
-        // Standard pull down when at top
-        setPullDistance(Math.min(diffDown, 100));
       } else {
         setPullDistance(0);
       }
@@ -116,7 +108,7 @@ export default function SwipeToReload({ children }) {
               transform: reloading ? 'none' : `rotate(${pullDistance * 3.6}deg)`
             }}
           ></i>
-          <span>{reloading ? 'Reloading...' : pullDistance >= 60 ? 'Release to reload' : 'Swipe to reload'}</span>
+          <span>{reloading ? 'Reloading...' : pullDistance >= 65 ? 'Release to reload' : 'Swipe up to reload'}</span>
         </div>
       )}
       {children}

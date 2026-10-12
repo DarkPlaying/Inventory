@@ -1,4 +1,5 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { supabase } from '../supabase';
 
 const NOTIFICATION_STORAGE_KEY = 'inventory_notification_pref';
 export const STOCK_CHANNEL_ID = 'stock_alerts';
@@ -109,6 +110,98 @@ export async function sendStockAlertNotification(outCount, lowCount, outItems = 
         console.warn('Web notification error:', e);
       }
     }
+  }
+}
+
+// Memory cache to deduplicate notifications triggered within short intervals (e.g., button click vs realtime DB event)
+const recentNotifs = new Map();
+
+/**
+ * Trigger an immediate notification when stocks are added, updated, or removed.
+ * Includes deduplication so identical events within 4 seconds don't fire twice.
+ */
+export async function sendStockChangeNotification(title, body) {
+  const key = `${title}::${body}`;
+  const now = Date.now();
+  if (recentNotifs.has(key) && (now - recentNotifs.get(key)) < 4000) {
+    return;
+  }
+  recentNotifs.set(key, now);
+  // Clean old entries
+  for (const [k, time] of recentNotifs.entries()) {
+    if (now - time > 10000) recentNotifs.delete(k);
+  }
+
+  try {
+    await ensureNotificationChannel();
+    const hasPerm = await checkNotificationPermission();
+    if (!hasPerm) return;
+
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          id: Math.floor(Date.now() / 1000) % 100000,
+          title,
+          body,
+          channelId: STOCK_CHANNEL_ID,
+          smallIcon: 'ic_launcher',
+          sound: 'default'
+        }
+      ]
+    });
+  } catch (err) {
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      try {
+        new Notification(title, { body, icon: '/dashboard.png' });
+      } catch (e) {
+        console.warn('Web notification fallback error:', e);
+      }
+    }
+  }
+}
+
+/**
+ * Check and trigger the daily stock notification ONCE per day.
+ * Never fires multiple times on the same day, even on page refresh or reload.
+ */
+export async function checkAndTriggerDailyStockNotification() {
+  try {
+    const today = new Date().toDateString();
+    const lastDaily = localStorage.getItem('last_daily_stock_notif_date');
+
+    // Always maintain the 9:00 AM repeating daily schedule
+    await scheduleDailyStockNotification();
+
+    // Only fire active notification once per day
+    if (lastDaily === today) {
+      return;
+    }
+
+    const hasPerm = await checkNotificationPermission();
+    if (!hasPerm) return;
+
+    // Fetch live inventory snapshot
+    const { data: items, error } = await supabase.from('items').select('name, quantity, status');
+    if (error || !items) return;
+
+    const outItems = items.filter(x => Number(x.quantity) === 0 || x.status === 'OUT');
+    const lowItems = items.filter(x => Number(x.quantity) > 0 && Number(x.quantity) < 20 && x.status !== 'OUT');
+
+    let title = '📦 Daily Inventory Status';
+    let body = `All ${items.length} inventory items are well-stocked today.`;
+
+    if (outItems.length > 0 || lowItems.length > 0) {
+      title = '⚠️ Daily Inventory Alert';
+      const parts = [];
+      if (outItems.length > 0) parts.push(`${outItems.length} out of stock`);
+      if (lowItems.length > 0) parts.push(`${lowItems.length} running low`);
+      body = `${parts.join(', ')}. Tap to view inventory.`;
+    }
+
+    await sendStockChangeNotification(title, body);
+    localStorage.setItem('last_daily_stock_notif_date', today);
+  } catch (err) {
+    console.warn('Error running daily stock notification check:', err);
   }
 }
 
