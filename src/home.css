@@ -93,7 +93,7 @@ body {
   height: 52px;
   border-radius: 15px;
   font-family: var(--app-font);
-  margin-top: max(15px, calc(env(safe-area-inset-top) + 10px));
+  margin-top: max(50px, calc(env(safe-area-inset-top, 44px) + 12px));
 }
 
 .navi i {

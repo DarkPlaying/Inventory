@@ -1,7 +1,7 @@
 .search-page {
-  padding-top: max(15px, calc(env(safe-area-inset-top) + 10px));
   padding: 10px;
-  padding-bottom: calc(85px + env(safe-area-inset-bottom));
+  padding-top: max(50px, calc(env(safe-area-inset-top, 44px) + 12px));
+  padding-bottom: calc(85px + env(safe-area-inset-bottom, 20px));
   font-family: var(--app-font);
   min-height: 100vh;
   box-sizing: border-box;
