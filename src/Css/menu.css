@@ -1,0 +1,643 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: black;
+  font-family: fantasy;
+}
+
+.menu-page {
+  padding: 10px;
+  padding-bottom: calc(85px + env(safe-area-inset-bottom));
+  font-family: fantasy;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: url("https://i.pinimg.com/736x/56/17/d6/5617d6088a5794f177425ae6780041dd.jpg");
+  background-size: auto;
+  background-repeat: repeat;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 15px;
+  padding: 8px 12px;
+  height: 50px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  font-family: fantasy;
+  font-size: 14px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.menu-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: black;
+}
+
+.menu-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+}
+
+.search {
+  margin: 15px 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.search button {
+  border: 1px solid rgba(118, 118, 118, 0.6);
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.5);
+  height: 38px;
+  padding: 0 12px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.search .search-btn-excel {
+  background-color: rgba(16, 185, 129, 0.18);
+  border-color: #10b981;
+  color: #065f46;
+  font-weight: 600;
+}
+
+.search .search-btn-excel:hover {
+  background-color: rgba(16, 185, 129, 0.3);
+}
+
+.search .search-btn-add {
+  background-color: rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+.search .fa-plus {
+  font-size: 15px;
+  padding-right: 5px;
+}
+
+.search input {
+  width: 100%;
+  height: 38px;
+  padding: 0 15px;
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 15px;
+  border: 1px solid rgba(118, 118, 118, 0.6);
+  font-family: fantasy;
+  font-size: 14px;
+}
+
+.search input::placeholder {
+  font-family: fantasy;
+  color: black;
+}
+
+.menu-page .category {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+
+.menu-page .category button {
+  font-family: fantasy;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(141, 141, 141, 0.6);
+  color: black;
+  background: rgba(255, 255, 255, 0.7);
+  height: 40px;
+  border-radius: 50px;
+  cursor: pointer;
+  padding: 0 18px;
+}
+
+.outstock {
+  display: flex;
+  position: relative;
+  width: 100%;
+  height: 80px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  background: rgba(119, 3, 3, 0.863);
+  border-radius: 15px;
+}
+
+.outstock .fa-triangle-exclamation {
+  color: red;
+  font-size: 30px;
+  background-color: rgb(83, 5, 5);
+  padding: 5px;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.outstock h1 {
+  font-size: 18px;
+  font-weight: 900;
+  color: white;
+  margin-bottom: -10px;
+
+}
+
+.outstock p {
+  color: white;
+  font-size: 15px;
+
+}
+
+.outstock button {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.outstock .fa-circle-arrow-right {
+  font-size: 30px;
+  color: white;
+  padding-left: 20px;
+}
+
+.outstock .fa-xmark {
+  font-size: 20px;
+  color: white;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.outstock .fa-xmark:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 15px 0 25px;
+}
+
+.item-card {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  color: white;
+  font-family: fantasy;
+  height: 110px;
+}
+
+.item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.item-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.item-delete {
+  background: transparent;
+  border: none;
+  color: rgba(239, 68, 68, 0.85);
+  font-size: 15px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, color 0.15s;
+}
+
+.item-delete:hover {
+  color: #dc2626;
+  transform: scale(1.15);
+}
+
+.item-name {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 4px 0 6px;
+  color: #000000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-badge {
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.badge-out {
+  color: #ff5252;
+  background: rgba(255, 82, 82, 0.2);
+}
+
+.badge-low {
+  color: #ffa726;
+  background: rgba(255, 167, 38, 0.2);
+}
+
+.badge-stocked {
+  color: #00e676;
+  background: rgba(0, 230, 118, 0.2);
+}
+
+.item-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid black;
+  border-radius: 12px;
+  padding: 4px 10px;
+  margin-top: auto;
+}
+
+.step-btn {
+  background: transparent;
+  border: none;
+  color: black;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.step-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.step-count {
+  font-size: 15px;
+  font-weight: 700;
+  color: black;
+}
+
+.menu-page .footer {
+  font-family: fantasy;
+  position: fixed;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  left: 10px;
+  right: 10px;
+  width: calc(100% - 20px);
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  padding: 6px;
+  min-height: 52px;
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.35);
+  gap: 8px;
+  z-index: 999;
+}
+
+.footer a {
+  text-decoration: none;
+  display: flex;
+  flex: 1;
+}
+
+.menu-page .footer button {
+  font-family: fantasy;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  margin: 0;
+  color: black;
+  background: white;
+  height: 44px;
+  width: 100%;
+  flex: 1;
+  border-radius: 12px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+.footer button span {
+  padding-left: 0px;
+}
+
+/* Modals for Add Item & Stock Status */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-box {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  max-width: 330px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  color: black;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: black;
+  padding: 4px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-form label {
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modal-form input,
+.modal-form select {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  background: white;
+  color: black;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.category-select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.category-dropdown-select,
+.custom-category-input {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+}
+
+.custom-category-input {
+  background: #f8fafc;
+  border: 1.5px solid #3b82f6 !important;
+  outline: none;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.custom-category-toggle-btn {
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0 12px;
+  height: 38px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.custom-category-toggle-btn:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+.custom-category-toggle-btn.active {
+  background: #2563eb;
+  color: white;
+}
+
+.modal-btn-submit {
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 6px;
+  font-family: inherit;
+}
+
+.status-summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 6px 0;
+}
+
+.status-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.category button.active {
+  background: black !important;
+  color: white !important;
+}
+
+/* Excel Import Modal Styles */
+.modal-box-excel {
+  max-width: 360px;
+}
+
+.excel-format-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 10px 0 6px 0;
+  color: #111827;
+}
+
+.excel-table-preview {
+  overflow-x: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: white;
+}
+
+.excel-table-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: left;
+}
+
+.excel-table-preview th {
+  background: rgba(16, 185, 129, 0.15);
+  color: #065f46;
+  padding: 6px 8px;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+.excel-table-preview td {
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+  color: #374151;
+}
+
+.excel-note {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 4px 0 14px 0;
+  line-height: 1.4;
+}
+
+.excel-upload-action {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.excel-upload-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #10b981;
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  text-align: center;
+}
+
+.excel-upload-action-btn:hover {
+  background: #059669;
+}
+
+.excel-actions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.excel-sample-download-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f3f4f6;
+  color: #1f2937;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.excel-sample-download-btn:hover {
+  background: #e5e7eb;
+}

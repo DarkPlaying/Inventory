@@ -1,0 +1,262 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: black;
+  font-family: fantasy;
+}
+
+.profile-page {
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  background: url("https://i.pinimg.com/736x/56/17/d6/5617d6088a5794f177425ae6780041dd.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.prfile-page main {
+  flex: 1;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 30px;
+  overflow: hidden;
+  padding: 0 4px;
+
+}
+
+.imglogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.imglogo img {
+  height: 165px;
+  width: 96%;
+  border-radius: 15px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.title h1 {
+  text-align: left;
+  padding-left: 8px;
+  margin: 0;
+  font-size: 21px;
+}
+
+.user {
+  text-align: left;
+  padding-left: 8px;
+  margin: 0;
+}
+
+.user p {
+  margin: 0;
+  font-size: 15px;
+}
+.user i{
+  text-align: left;
+  direction: rtl;
+}
+.image img{
+  width: 90%;
+  margin: 10px;
+  border-radius: 15px;
+
+}
+.circle img{
+  width: 70px;
+  height: 70px;
+  margin: 10px;
+  border-radius: 100%;
+
+}
+ .navi {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgb(255, 255, 255,0.6);
+  margin: 10px;
+  padding: 5px;
+  background: rgb(255, 255, 255,0.3);
+  height: 50px;
+  border-radius: 15px;
+  font-family:fantasy;
+  margin-top: max(10px, env(safe-area-inset-top));
+
+}
+
+.fa-bars {
+  font-size: 15px;
+}
+
+.navi input {
+  background-color: rgb(255, 255, 255,0.4);
+  border-radius:15px;
+  border:1px solid rgba(118, 118, 118, 0.6);
+  height: 20px;
+}
+.navi input::placeholder{
+  font-family:fantasy;
+  color:black;
+  padding-left:10px ; 
+}
+.navi input:active{
+  border: 1px solid rgb(1, 1, 1);
+}
+.navi span{
+  padding-bottom: 5px;
+}
+.navi button{
+  border: none;
+}
+.menu-page .footer {
+  font-family: fantasy;
+  position: fixed;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  left: 10px;
+  right: 10px;
+  width: calc(100% - 20px);
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  padding: 6px;
+  min-height: 52px;
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.35);
+  gap: 8px;
+  z-index: 999;
+}
+
+.footer a {
+  text-decoration: none;
+  display: flex;
+  flex: 1;
+}
+
+.menu-page .footer button {
+  font-family: fantasy;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  margin: 0;
+  color: black;
+  background: white;
+  height: 44px;
+  width: 100%;
+  flex: 1;
+  border-radius: 12px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+.footer button span {
+  padding-left: 0px;
+}
+main .container{
+    background:rgb(255, 255, 255,0.6) ;
+    box-shadow:0 8px 24px rgba(0, 0, 0, 0.28) ;
+    position:absolute;
+    top: 120px;
+    width: 95%;
+    left: 10px;
+    border-radius: 50px;
+    height: 570px;
+}
+main .could{
+    border-radius:50px;
+    width: 95%;
+    padding: 10px;
+    height: 200px;
+}
+main .avater{
+    width: 100px;
+    height: 100px;
+    box-shadow:0 8px 24px rgba(0, 0, 0, 0.28) ;
+    border-radius:50px;
+    margin: -50px;
+    left: 80px;
+    position: absolute;
+    border: 3px solid white;
+}
+main .follow{
+    background:rgb(255, 255, 255,0.6) ;
+    box-shadow:0 8px 24px rgba(0, 0, 0, 0.28) ;
+    position: absolute;
+    border: none;
+    top: 20px;
+    right: 30px;
+    width: 120px;
+    height: 50px;
+    border-radius: 50px;
+}
+main .started{
+    position: absolute;
+    left: 150px;
+    top: 220px;
+    font:lighter;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+main .name{
+    position: absolute;
+    left: 30px;
+    top: 270px;
+    font:lighter;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+main .info{
+    position: absolute;
+    text-align: justify;
+    width: 320px;
+    line-height: 25px;
+    letter-spacing: 1.5px;
+    left: 30px;
+    top: 325px;
+    font:lighter;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+main .detail{
+    position: absolute;
+    text-align: justify;
+    width: 320px;
+    line-height: 25px;
+    letter-spacing: 1.5px;
+    left: 30px;
+    top: 485px;
+    font:lighter;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+main .detail span{
+    font-size: 15px;
+}
+main .detail .companies-highlight {
+    background: rgba(99, 102, 241, 0.18);
+    color: #3730a3;
+    padding: 4px 12px;
+    margin-top: 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+    display: inline-block;
+}
