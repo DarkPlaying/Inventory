@@ -15,6 +15,13 @@ html, body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, di
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Universal Top Navigation Header Spacing across all sections */
+.navi,
+.menu-header,
+.search-header {
+  margin-top: max(50px, calc(env(safe-area-inset-top, 44px) + 12px)) !important;
+}
+
 /* Stock Alert Modal Card */
 .stock-alert-overlay {
   position: fixed;

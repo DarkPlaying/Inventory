@@ -83,14 +83,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid rgb(255, 255, 255,0.6);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 10px;
-  padding: 5px;
-  background: rgb(255, 255, 255,0.3);
-  height: 50px;
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.3);
+  height: 52px;
   border-radius: 15px;
   font-family: var(--app-font);
   margin-top: max(50px, calc(env(safe-area-inset-top, 44px) + 12px));
+  box-sizing: border-box;
 }
 
 .fa-bars {
