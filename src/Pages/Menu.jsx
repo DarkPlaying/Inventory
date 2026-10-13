@@ -117,9 +117,13 @@ export default function Menu() {
                   <span>{item.status}</span>
                 </div>
                 <div className="item-stepper">
-                  <button className="step-btn" onClick={() => updateCount(item.id, -1)}>−</button>
+                  <button className="step-btn" onClick={() => updateCount(item.id, -1)} title="Decrease">
+                    <i className="fa-solid fa-minus"></i>
+                  </button>
                   <span className="step-count">{item.count}</span>
-                  <button className="step-btn" onClick={() => updateCount(item.id, 1)}>+</button>
+                  <button className="step-btn" onClick={() => updateCount(item.id, 1)} title="Increase">
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
                 </div>
               </div>
             ))

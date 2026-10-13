@@ -215,16 +215,18 @@ export default function Search() {
                               type="button"
                               className="search-qty-btn"
                               onClick={() => handleQuantityChange(item.id, -1)}
+                              title="Decrease"
                             >
-                              -
+                              <i className="fa-solid fa-minus"></i>
                             </button>
                             <span className="search-qty-value">{qty}</span>
                             <button
                               type="button"
                               className="search-qty-btn"
                               onClick={() => handleQuantityChange(item.id, 1)}
+                              title="Increase"
                             >
-                              +
+                              <i className="fa-solid fa-plus"></i>
                             </button>
                           </div>
                         </div>
