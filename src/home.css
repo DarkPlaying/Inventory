@@ -123,13 +123,18 @@ body {
   background-color: rgb(255, 255, 255, 0.4);
   border-radius: 15px;
   border: 1px solid rgba(118, 118, 118, 0.6);
-  height: 24px;
+  height: 28px;
+  width: 105px;
+  max-width: 115px;
+  padding: 0 10px;
+  font-size: 13px;
+  box-sizing: border-box;
 }
 
 .navi input::placeholder {
   font-family: var(--app-font);
   color: black;
-  padding-left: 10px;
+  padding-left: 4px;
 }
 
 .navi input:active {
