@@ -6,25 +6,20 @@ const CategoryRadarChart = ({
 }) => {
   const [selectedProduct, setSelectedProduct] = useState(null)
 
-  // Top 6 products list with fallback
+  // Top products list directly from DB items prop
   const products = React.useMemo(() => {
     if (top6Products && top6Products.length > 0) {
       return top6Products.slice(0, 6)
     }
-    return [
-      { name: 'Kurtis', revenue: 28450, quantity: 103, price: 276, category: 'Kurtis' },
-      { name: 'Jeans top', revenue: 19550, quantity: 85, price: 230, category: 'Jeans' },
-      { name: 'Crop top', revenue: 16100, quantity: 70, price: 230, category: 'Tops' },
-      { name: 'T-Shirt', revenue: 10350, quantity: 45, price: 230, category: 'T-Shirts' },
-      { name: 'Shoes', revenue: 8500, quantity: 34, price: 250, category: 'Footwear' },
-      { name: 'Hoodies', revenue: 7200, quantity: 24, price: 300, category: 'Hoodies' },
-    ]
+    return []
   }, [top6Products])
 
   const maxRevenue = Math.max(1, ...products.map(p => Number(p.revenue) || 0))
   const center = { x: 130, y: 75 }
   const radius = 48
-  const angles = [0, 60, 120, 180, 240, 300]
+  const angles = products.length > 0
+    ? products.map((_, i) => (360 / products.length) * i)
+    : [0, 60, 120, 180, 240, 300]
 
   const points = products.map((prod, i) => {
     const rad = (angles[i] - 90) * (Math.PI / 180)
@@ -99,9 +94,14 @@ const CategoryRadarChart = ({
         )}
       </div>
 
-      {/* 6-Point Hexagonal Radar Polygon */}
-      <div className="radar-svg-container" style={{ width: '100%', height: isExpanded ? 190 : 140 }}>
-        <svg viewBox="0 0 260 150" className="radar-chart-svg">
+      {/* Dynamic Radar Polygon */}
+      {products.length === 0 ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: isExpanded ? 190 : 140, color: '#94a3b8', fontSize: '13px' }}>
+          No products available in database
+        </div>
+      ) : (
+        <div className="radar-svg-container" style={{ width: '100%', height: isExpanded ? 190 : 140 }}>
+          <svg viewBox="0 0 260 150" className="radar-chart-svg">
           {/* Concentric spider web hexagons */}
           {[1, 0.68, 0.38].map((scale, sIdx) => {
             const hexPoints = angles.map(deg => {
@@ -187,6 +187,7 @@ const CategoryRadarChart = ({
           })}
         </svg>
       </div>
+      )}
 
       {/* Top 6 Product Pills Selector */}
       <div className="top6-product-pills">

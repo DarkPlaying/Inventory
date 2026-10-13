@@ -28,12 +28,7 @@ const PieChart = ({
         percentage: s.percentage
       }))
     }
-    return [
-      { label: 'Kurtis', value: 103, color: '#8b5cf6', glowColor: '#8b5cf6' },
-      { label: 'Jeans top', value: 85, color: '#10b981', glowColor: '#10b981' },
-      { label: 'Crop top', value: 70, color: '#f59e0b', glowColor: '#f59e0b' },
-      { label: 'T-Shirt', value: 45, color: '#3b82f6', glowColor: '#3b82f6' }
-    ]
+    return []
   }, [pieSlices])
 
   const total = segments.reduce((sum, s) => sum + s.value, 0) || totalQuantity || 1
@@ -153,8 +148,13 @@ const PieChart = ({
       </div>
 
       {/* SVG Donut Circle - Centered below details */}
-      <div className="pie-stage-container">
-        <div className="pie-svg-stage" style={{ width: chartSize, height: chartSize }}>
+      {segments.length === 0 ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: chartSize, color: '#94a3b8', fontSize: '13px' }}>
+          No items available in database
+        </div>
+      ) : (
+        <div className="pie-stage-container">
+          <div className="pie-svg-stage" style={{ width: chartSize, height: chartSize }}>
           <svg
             width={chartSize}
             height={chartSize}
@@ -216,6 +216,7 @@ const PieChart = ({
           </div>
         </div>
       </div>
+      )}
 
       {/* Top 6 Items Quick-Select Pills (like Line and Radar) */}
       <div className="top6-product-pills">

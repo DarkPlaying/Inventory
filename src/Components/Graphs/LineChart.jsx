@@ -28,26 +28,19 @@ const CustomTooltip = ({ active, payload, label }) => {
 }
 
 const LineChart = ({
-  totalRevenue = 81934,
-  highProduct = { name: 'Kurtis', revenue: 28450 },
+  totalRevenue = 0,
+  highProduct = null,
   top6Products = [],
   isExpanded = false
 }) => {
   const [selectedProduct, setSelectedProduct] = useState(null)
 
-  // Top 6 products list with fallback
+  // Top products list directly from DB items prop
   const products = React.useMemo(() => {
     if (top6Products && top6Products.length > 0) {
       return top6Products.slice(0, 6)
     }
-    return [
-      { name: 'Kurtis', revenue: 28450, quantity: 103, price: 276, category: 'Kurtis' },
-      { name: 'Jeans top', revenue: 19550, quantity: 85, price: 230, category: 'Jeans' },
-      { name: 'Crop top', revenue: 16100, quantity: 70, price: 230, category: 'Tops' },
-      { name: 'T-Shirt', revenue: 10350, quantity: 45, price: 230, category: 'T-Shirts' },
-      { name: 'Shoes', revenue: 8500, quantity: 34, price: 250, category: 'Footwear' },
-      { name: 'Hoodies', revenue: 7200, quantity: 24, price: 300, category: 'Hoodies' },
-    ]
+    return []
   }, [top6Products])
 
   const totalTopRevenue = products.reduce((sum, p) => sum + (Number(p.revenue) || 0), 0) || totalRevenue || 1
@@ -123,18 +116,23 @@ const LineChart = ({
         )}
       </div>
 
-      {/* Recharts Line Curve connecting top 6 products */}
-      <div className="line-recharts-container" style={{ width: '100%', height: isExpanded ? 180 : 135 }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsLine
-            data={chartData}
-            margin={{ top: 12, right: 16, left: -16, bottom: 0 }}
-            onClick={(state) => {
-              if (state && state.activePayload && state.activePayload.length) {
-                handleProductSelect(state.activePayload[0].payload.fullProduct)
-              }
-            }}
-          >
+      {/* Recharts Line Curve connecting top products */}
+      {products.length === 0 ? (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: isExpanded ? 180 : 135, color: '#94a3b8', fontSize: '13px' }}>
+          No products available in database
+        </div>
+      ) : (
+        <div className="line-recharts-container" style={{ width: '100%', height: isExpanded ? 180 : 135 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <RechartsLine
+              data={chartData}
+              margin={{ top: 12, right: 16, left: -16, bottom: 0 }}
+              onClick={(state) => {
+                if (state && state.activePayload && state.activePayload.length) {
+                  handleProductSelect(state.activePayload[0].payload.fullProduct)
+                }
+              }}
+            >
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 0, 0, 0.05)" vertical={false} />
             <XAxis
               dataKey="shortName"
@@ -186,6 +184,7 @@ const LineChart = ({
           </RechartsLine>
         </ResponsiveContainer>
       </div>
+      )}
 
       {/* Top 6 Products Clickable Pills */}
       <div className="top6-product-pills">

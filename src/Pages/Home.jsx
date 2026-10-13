@@ -37,21 +37,14 @@ const Home = () => {
   }
 
   const totalClients = React.useMemo(() => {
-    if (!items || items.length === 0) return 263
+    if (!items || items.length === 0) return 0
     const count = new Set(items.map(x => x.dealer_name?.trim()).filter(Boolean)).size
-    return count > 0 ? count : 263
+    return count
   }, [items])
 
   const top6Products = React.useMemo(() => {
     if (!items || items.length === 0) {
-      return [
-        { name: 'Kurtis', revenue: 28450, quantity: 103, price: 276, category: 'Kurtis' },
-        { name: 'Jeans top', revenue: 19550, quantity: 85, price: 230, category: 'Jeans' },
-        { name: 'Crop top', revenue: 16100, quantity: 70, price: 230, category: 'Tops' },
-        { name: 'T-Shirt', revenue: 10350, quantity: 45, price: 230, category: 'T-Shirts' },
-        { name: 'Shoes', revenue: 8500, quantity: 34, price: 250, category: 'Footwear' },
-        { name: 'Hoodies', revenue: 7200, quantity: 24, price: 300, category: 'Hoodies' },
-      ]
+      return []
     }
     const mapped = items.map((it, idx) => {
       const p = Number(it.price) || 0
@@ -63,7 +56,7 @@ const Home = () => {
         revenue: rev,
         quantity: q,
         price: p,
-        category: it.category || it.name || 'General'
+        category: it.category || 'General'
       }
     })
     mapped.sort((a, b) => b.revenue - a.revenue)
@@ -74,8 +67,30 @@ const Home = () => {
     if (top6Products.length > 0) {
       return top6Products[0]
     }
-    return { name: 'Kurtis', revenue: 28450 }
+    return { name: 'None', revenue: 0 }
   }, [top6Products])
+
+  const categoryStats = React.useMemo(() => {
+    if (!items || items.length === 0) return { count: 0, topCategory: 'None' }
+    const catMap = {}
+    items.forEach(it => {
+      const cat = (it.category || 'General').trim()
+      catMap[cat] = (catMap[cat] || 0) + 1
+    })
+    const keys = Object.keys(catMap)
+    let topCat = keys[0] || 'None'
+    let topCount = 0
+    keys.forEach(k => {
+      if (catMap[k] > topCount) {
+        topCount = catMap[k]
+        topCat = k
+      }
+    })
+    return {
+      count: keys.length,
+      topCategory: topCat
+    }
+  }, [items])
 
 
   return (
@@ -174,7 +189,7 @@ const Home = () => {
               </div>
               <span className="metric-label">Total Menus</span>
             </div>
-            <div className="metric-value">{totaliteam || 140}</div>
+            <div className="metric-value">{totaliteam || 0}</div>
           </div>
 
           {/* Card 2: Total Orders */}
@@ -185,7 +200,7 @@ const Home = () => {
               </div>
               <span className="metric-label">Total Orders</span>
             </div>
-            <div className="metric-value">{sales || 175}</div>
+            <div className="metric-value">{sales || 0}</div>
           </div>
 
           {/* Card 3: Total Clients */}
@@ -207,7 +222,7 @@ const Home = () => {
               </div>
               <span className="metric-label">Total Revenue</span>
             </div>
-            <div className="metric-value">${Number(totalf || 81934).toLocaleString()}</div>
+            <div className="metric-value">${Number(totalf || 0).toLocaleString()}</div>
           </div>
         </div>
 
@@ -239,14 +254,14 @@ const Home = () => {
                     <span className="stat-legend-dot dot-purple"></span>
                     <span className="revenue-stat-desc">Total Revenue</span>
                   </div>
-                  <div className="revenue-stat-number">${Number(totalf || 81934).toLocaleString()}</div>
+                  <div className="revenue-stat-number">${Number(totalf || 0).toLocaleString()}</div>
                 </div>
                 <div className="revenue-stat-item">
                   <div className="revenue-stat-header-label">
                     <span className="stat-legend-dot dot-cyan"></span>
                     <span className="revenue-stat-desc">High Product</span>
                   </div>
-                  <div className="revenue-stat-number stat-cyan">${Number(highProduct.revenue).toLocaleString()}</div>
+                  <div className="revenue-stat-number stat-cyan">${Number(highProduct?.revenue || 0).toLocaleString()}</div>
                 </div>
               </>
             )}
@@ -258,14 +273,14 @@ const Home = () => {
                     <span className="stat-legend-dot dot-cyan"></span>
                     <span className="revenue-stat-desc">Total Menus</span>
                   </div>
-                  <div className="revenue-stat-number">{totaliteam || 11}</div>
+                  <div className="revenue-stat-number">{totaliteam || 0}</div>
                 </div>
                 <div className="revenue-stat-item">
                   <div className="revenue-stat-header-label">
                     <span className="stat-legend-dot dot-purple"></span>
                     <span className="revenue-stat-desc">Total Quantity</span>
                   </div>
-                  <div className="revenue-stat-number stat-cyan">{sales || totalQuantity}</div>
+                  <div className="revenue-stat-number stat-cyan">{sales || totalQuantity || 0}</div>
                 </div>
               </>
             )}
@@ -277,14 +292,14 @@ const Home = () => {
                     <span className="stat-legend-dot dot-cyan"></span>
                     <span className="revenue-stat-desc">Categories</span>
                   </div>
-                  <div className="revenue-stat-number">5</div>
+                  <div className="revenue-stat-number">{categoryStats.count}</div>
                 </div>
                 <div className="revenue-stat-item">
                   <div className="revenue-stat-header-label">
                     <span className="stat-legend-dot dot-purple"></span>
                     <span className="revenue-stat-desc">Top Category</span>
                   </div>
-                  <div className="revenue-stat-number stat-cyan">Clothes</div>
+                  <div className="revenue-stat-number stat-cyan">{categoryStats.topCategory}</div>
                 </div>
               </>
             )}
