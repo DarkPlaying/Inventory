@@ -92,7 +92,7 @@ const Home = () => {
         <span>Inventory</span>
         <input
           type="text"
-          placeholder="search"
+          placeholder={"search items"}
           onClick={() => navigate('/search')}
           readOnly
         />

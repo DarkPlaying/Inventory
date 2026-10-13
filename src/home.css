@@ -107,7 +107,7 @@ body {
   gap: 8px;
 }
 
-.navi button {
+.navi button:not(.back-btn) {
   background: transparent;
   border: none;
   padding: 0;
@@ -120,6 +120,33 @@ body {
   flex-shrink: 0;
   height: 32px;
   width: 32px;
+}
+
+.navi .back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  font-family: var(--app-font);
+  font-size: 14px;
+  height: 36px;
+  width: auto;
+  min-width: fit-content;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  color: #000000;
+  white-space: nowrap;
+  transition: transform 0.15s, background 0.15s;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.navi .back-btn:active {
+  transform: scale(0.96);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .navi .fa-bars {
