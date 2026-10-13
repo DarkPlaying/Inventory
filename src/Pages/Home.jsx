@@ -89,17 +89,29 @@ const Home = () => {
 
       {/* Top Navbar */}
       <nav className="navi">
-        <button><i className="fa-solid fa-bars" onClick={() => setOpen(!open)}></i></button>
-        <span>Inventory</span>
-        <input
-          type="text"
-          placeholder="search iteams"
-          onClick={() => navigate('/search')}
-          readOnly
-        />
-        <i className="fa-regular fa-bell" style={{ cursor: 'pointer' }} onClick={() => setShowStatusModal(true)}></i>
-        <Link to="/profile" >
-<i className="fa-solid fa-circle-user"></i></Link>
+        <div className="navi-left">
+          <button className="navi-menu-btn" onClick={() => setOpen(!open)} title="Navigation">
+            <i className="fa-solid fa-bars"></i>
+          </button>
+          <span className="navi-title">Inventory</span>
+        </div>
+
+        <div className="navi-search-box" onClick={() => navigate('/search')} title="Search Items">
+          <i className="fa-solid fa-magnifying-glass"></i>
+          <span>Search items...</span>
+        </div>
+
+        <div className="navi-icons">
+          <i
+            className="fa-regular fa-bell"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setShowStatusModal(true)}
+            title="Stock Alerts"
+          ></i>
+          <Link to="/profile" title="Profile">
+            <i className="fa-solid fa-circle-user"></i>
+          </Link>
+        </div>
       </nav>
 
       {/* Main Content */}
@@ -109,13 +121,22 @@ const Home = () => {
         <div className="imglogo"><img src={dashboardImg} alt="Inventory Dashboard" /></div>
         
         <div className="iteamtotal">
-          <div className="iteam"> Total Revenue : ${totalf}</div>
+          <div className="iteam-revenue">Total Revenue : ${totalf}</div>
         </div>
 
         <div className="iteams">
-          <div className="iteam" style={{ color: "purple" }}>total Items: {totaliteam}</div>
-          <div className="iteam" style={{ color: "purple" }}>Out of Stocks: {outstock}</div>
-          <div className="iteam" style={{ color: "purple" }}>Total Quantity: {sales}</div>
+          <div className="iteam">
+            <span className="iteam-title">Total Items</span>
+            <strong className="iteam-count">{totaliteam}</strong>
+          </div>
+          <div className="iteam iteam-alert">
+            <span className="iteam-title">Out of Stock</span>
+            <strong className="iteam-count">{outstock}</strong>
+          </div>
+          <div className="iteam">
+            <span className="iteam-title">Total Quantity</span>
+            <strong className="iteam-count">{sales}</strong>
+          </div>
         </div>
 
         {/* Graph Card */}

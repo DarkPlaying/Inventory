@@ -5,14 +5,41 @@
   --app-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-*, *::before, *::after {
-  font-family: var(--app-font) !important;
-}
-
-html, body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, div, a, label, strong, b, i, em, li, td, th {
-  font-family: var(--app-font) !important;
+html, body {
+  font-family: var(--app-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apply app font to text elements while excluding icon classes */
+button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, label, strong, b, em, li, td, th {
+  font-family: var(--app-font);
+}
+
+span:not([class*="fa-"]), div:not([class*="fa-"]), a:not([class*="fa-"]) {
+  font-family: var(--app-font);
+}
+
+/* Explicitly enforce Font Awesome fonts on all icons */
+.fa, .fas, .far, .fal, .fad, .fab, .fa-solid, .fa-regular, .fa-brands, [class*="fa-"], [class*="fa-"]::before {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+}
+
+.fa-solid, .fas, .fa-solid::before, .fas::before {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+}
+
+.fa-regular, .far, .fa-regular::before, .far::before {
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 400 !important;
+}
+
+.fa-brands, .fab, .fa-brands::before, .fab::before {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
 }
 
 /* Universal Top Navigation Header Spacing across all sections */

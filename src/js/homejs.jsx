@@ -25,32 +25,29 @@ export function useHomeLogic() {
   }
 
   useEffect(() => {
+    let retryTimer = null
+
     async function Grandtotal() {
-      const { data, error } = await supabase.from('items').select('*')
-      if (data) {
-        setItems(data)
-        const t = data.reduce((a, x) => a + (Number(x.total_price) || 0), 0)
-        settotalf(t)
-        settotaliteam(data.length)
+      try {
+        const { data, error } = await supabase.from('items').select('*')
+        if (data) {
+          setItems(data)
+          const t = data.reduce((a, x) => a + (Number(x.total_price) || 0), 0)
+          settotalf(t)
+          settotaliteam(data.length)
 
-        const outItems = data.filter(x => Number(x.quantity) < 20 || x.status === 'OUT')
-        const lowItems = data.filter(x => Number(x.quantity) >= 20 && Number(x.quantity) < 30 && x.status !== 'OUT')
-        setoutstock(outItems.length)
+          const outItems = data.filter(x => Number(x.quantity) < 20 || x.status === 'OUT')
+          setoutstock(outItems.length)
 
-        const totalQty = data.reduce((a, x) => a + (Number(x.quantity) || 0), 0)
-        settotalsales(totalQty)
-
-        const formatNames = (list) => {
-          const names = list.map(x => x.name).filter(Boolean)
-          if (names.length === 0) return ""
-          if (names.length === 1) return names[0]
-          if (names.length === 2) return `${names[0]}, ${names[1]}`
-          return `${names[0]}, ${names[1]}..`
+          const totalQty = data.reduce((a, x) => a + (Number(x.quantity) || 0), 0)
+          settotalsales(totalQty)
+        } else if (error) {
+          console.warn("Could not fetch items, retrying in 3s:", error.message)
+          retryTimer = setTimeout(Grandtotal, 3000)
         }
-
-        // No automatic popup alert on page load/refresh
-      } else if (error) {
-        showToast("Error fetching items: " + error.message, "error")
+      } catch (err) {
+        console.warn("Network error during fetch, retrying in 3s:", err.message)
+        retryTimer = setTimeout(Grandtotal, 3000)
       }
     }
 
@@ -64,6 +61,7 @@ export function useHomeLogic() {
       .subscribe()
 
     return () => {
+      if (retryTimer) clearTimeout(retryTimer)
       supabase.removeChannel(channel)
     }
   }, [])
