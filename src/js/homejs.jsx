@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from '../supabase'
 import Swal from 'sweetalert2'
 
@@ -19,6 +19,14 @@ const getCachedOverview = () => {
   return null
 }
 
+const formatNames = (list) => {
+  const names = list.map(x => x.name).filter(Boolean)
+  if (names.length === 0) return ""
+  if (names.length === 1) return names[0]
+  if (names.length === 2) return `${names[0]}, ${names[1]}`
+  return `${names[0]}, ${names[1]}..`
+}
+
 export function useHomeLogic() {
   const cached = getCachedOverview()
   const [open, setOpen] = useState(false)
@@ -30,10 +38,31 @@ export function useHomeLogic() {
   const [sales, settotalsales] = useState(cached?.sales ?? 0)
   const [items, setItems] = useState(cached?.items ?? [])
   const [toast, setToast] = useState(null)
+  const userDismissedAlert = useRef(false)
 
   const showToast = (message, type = "error") => {
     setToast({ message, type })
   }
+
+  const handleSetToast = (val) => {
+    if (val === null) {
+      userDismissedAlert.current = true
+    }
+    setToast(val)
+  }
+
+  // Show starting alert immediately from cache on mount if available
+  useEffect(() => {
+    if (cached?.items && Array.isArray(cached.items) && !userDismissedAlert.current) {
+      const outCached = cached.items.filter(x => Number(x.quantity) < 20 || x.status === 'OUT')
+      const lowCached = cached.items.filter(x => Number(x.quantity) >= 20 && Number(x.quantity) < 30 && x.status !== 'OUT')
+      if (outCached.length > 0) {
+        showToast(`Out of stock: ${formatNames(outCached)}`, "error")
+      } else if (lowCached.length > 0) {
+        showToast(`Low stock: ${formatNames(lowCached)}`, "warning")
+      }
+    }
+  }, [])
 
   useEffect(() => {
     let retryTimeout = null
@@ -71,15 +100,14 @@ export function useHomeLogic() {
             }))
           } catch (_) {}
 
-          const formatNames = (list) => {
-            const names = list.map(x => x.name).filter(Boolean)
-            if (names.length === 0) return ""
-            if (names.length === 1) return names[0]
-            if (names.length === 2) return `${names[0]}, ${names[1]}`
-            return `${names[0]}, ${names[1]}..`
+          // Show out of stock alert at starting overview
+          if (!userDismissedAlert.current) {
+            if (outItems.length > 0) {
+              showToast(`Out of stock: ${formatNames(outItems)}`, "error")
+            } else if (lowItems.length > 0) {
+              showToast(`Low stock: ${formatNames(lowItems)}`, "warning")
+            }
           }
-
-          // No automatic popup alert on page load/refresh
         } else if (error) {
           if (retries > 0) {
             retryTimeout = setTimeout(() => Grandtotal(retries - 1), 2000)
@@ -300,7 +328,7 @@ export function useHomeLogic() {
     showGraphModal, setShowGraphModal,
     showStatusModal, setShowStatusModal,
     totalf, totaliteam, outstock, sales,
-    items, toast, setToast,
+    items, toast, setToast: handleSetToast,
     totalQuantity, conicGradient, pieSlices,
     downloadPieChart
   }
