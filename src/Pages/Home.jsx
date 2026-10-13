@@ -26,8 +26,8 @@ const Home = () => {
             <div className="stock-alert-header">
               <div className="stock-alert-title">
                 <i className={`fa-solid ${toast.type === 'error' ? 'fa-triangle-exclamation' :
-                    toast.type === 'warning' ? 'fa-circle-exclamation' :
-                      'fa-circle-check'
+                  toast.type === 'warning' ? 'fa-circle-exclamation' :
+                    'fa-circle-check'
                   }`}></i>
                 <span>{toast.type === 'error' ? 'Out of Stock Alert' : toast.type === 'warning' ? 'Low Stock Alert' : 'Stock Notification'}</span>
               </div>
@@ -92,7 +92,7 @@ const Home = () => {
         <span>Inventory</span>
         <input
           type="text"
-          placeholder="search iteams"
+          placeholder="search"
           onClick={() => navigate('/search')}
           readOnly
         />
@@ -185,10 +185,10 @@ const Home = () => {
           <button><i className="fa-solid fa-chart-column"></i><span>Overview</span></button>
         </Link>
         <Link to="/menu" style={{ textDecoration: 'none' }}>
-          <button><i className="fa-solid fa-bars"></i> Menu </button>
+          <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
         </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
-          <button><i className="fa-solid fa-briefcase"></i> Business </button>
+          <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>
         </Link>
         <Link to="/profile" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-address-card"></i><span>Profile</span></button>

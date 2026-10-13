@@ -91,7 +91,7 @@ export default function Search() {
             style={{ cursor: 'pointer' }}
             onClick={() => setShowStatusModal(true)}
           ></i>
-          <Link to="/profile" style={{ color: 'inherit', textDecoration: 'none' }}>
+          <Link to="/profile" onClick={() => navigate('/profile')} style={{ color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
             <i className="fa-solid fa-circle-user" style={{ cursor: 'pointer' }}></i>
           </Link>
         </div>
@@ -409,7 +409,9 @@ export default function Search() {
         <Link to="/business" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-briefcase"></i> Business </button>
         </Link>
-        <button><i className="fa-solid fa-address-card"></i><span>Profile</span></button>
+        <Link to="/profile" style={{ textDecoration: 'none' }}>
+          <button onClick={() => navigate('/profile')}><i className="fa-solid fa-address-card"></i><span>Profile</span></button>
+        </Link>
       </footer>
     </div>
   );
