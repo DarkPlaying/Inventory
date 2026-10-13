@@ -28,7 +28,28 @@ jobs:
       - name: Sync Capacitor iOS
         run: npx cap sync ios
 
-      - name: Build Xcode Archive
+      - name: Build iOS Simulator App (for Appetize.io)
+        run: |
+          cd ios/App
+          xcodebuild -project App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath derived_data \
+            build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+          cd derived_data/Build/Products/Debug-iphonesimulator
+          zip -r "$GITHUB_WORKSPACE/App-Simulator-appetize.zip" App.app
+
+      - name: Upload iOS Simulator Artifact (for Appetize.io)
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-Simulator-appetize
+          path: App-Simulator-appetize.zip
+
+      - name: Build Xcode Device Archive (for real iPhones)
         run: |
           cd ios/App
           xcodebuild -project App.xcodeproj \
@@ -41,13 +62,13 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
 
-      - name: Package into IPA
+      - name: Package into IPA (for physical devices)
         run: |
           mkdir -p Payload
           cp -r ios/App/build/App.xcarchive/Products/Applications/App.app Payload/
           zip -r "$GITHUB_WORKSPACE/App-unsigned.ipa" Payload
 
-      - name: Upload iOS IPA Artifact
+      - name: Upload iOS IPA Artifact (for physical devices)
         uses: actions/upload-artifact@v4
         with:
           name: App-unsigned-ipa
