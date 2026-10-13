@@ -102,7 +102,6 @@ export default function Search() {
         <i className="fa-solid fa-magnifying-glass search-input-icon"></i>
         <input
           type="text"
-          autoFocus
           className="search-field"
           placeholder="Search items or companies..."
           value={query}

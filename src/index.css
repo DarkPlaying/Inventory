@@ -6,18 +6,42 @@
 }
 
 html,
-body {
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden !important;
+  position: relative;
   font-family: var(--app-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
 
-button,
+button {
+  font-family: inherit;
+}
+
 input,
 select,
 textarea {
   font-family: inherit;
+  font-size: 16px; /* Prevents iOS WebKit automatic viewport zoom on focus */
 }
+
+/* Prevent SweetAlert2 from collapsing viewport height/width on iOS */
+html.swal2-shown,
+body.swal2-shown,
+html.swal2-height-auto,
+body.swal2-height-auto {
+  height: 100% !important;
+  min-height: 100% !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
 
 /* Ensure Font Awesome icons always use the Font Awesome font and are not overridden */
 .fa,

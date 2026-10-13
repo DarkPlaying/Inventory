@@ -109,10 +109,12 @@ export function useMenuLogic() {
           '🗑️ Stock Removed',
           `"${name}" was removed from inventory.`
         );
+        await getItems();
         Swal.fire({
+          toast: true,
+          position: 'top',
           icon: 'success',
-          title: 'Deleted!',
-          text: `"${name}" was deleted.`,
+          title: `"${name}" was deleted.`,
           timer: 1500,
           showConfirmButton: false
         });
@@ -154,23 +156,32 @@ export function useMenuLogic() {
     }]);
 
     if (error) {
-      Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+      Swal.fire({
+        toast: true,
+        position: 'top',
+        icon: 'error',
+        title: 'Error: ' + error.message,
+        timer: 3000,
+        showConfirmButton: false
+      });
     } else {
       sendStockChangeNotification(
         '📦 New Stock Added',
         `"${form.name}" was added to inventory (${form.quantity} units).`
       );
-      Swal.fire({
-        icon: 'success',
-        title: 'Item Added!',
-        text: `"${form.name}" in category "${finalCategory}" was added successfully!`,
-        timer: 2000,
-        showConfirmButton: false
-      });
       setShowAddModal(false);
       setForm({ name: '', quantity: '', price: '', dealer_name: 'ABC company', category: 'Clothes' });
       setIsCustomCategory(false);
       setCustomCategoryInput('');
+      await getItems();
+      Swal.fire({
+        toast: true,
+        position: 'top',
+        icon: 'success',
+        title: `"${form.name}" added successfully!`,
+        timer: 2000,
+        showConfirmButton: false
+      });
     }
   };
 
@@ -218,14 +229,17 @@ export function useMenuLogic() {
           '📊 Excel Stock Import',
           `Successfully added ${rows.length} items from Excel!`
         );
-        Swal.fire({
-          icon: 'success',
-          title: 'Excel Upload Success!',
-          text: `Successfully added ${rows.length} items from Excel!`,
-          confirmButtonColor: '#000000'
-        });
         setShowExcelModal(false);
         setShowAddModal(false);
+        await getItems();
+        Swal.fire({
+          toast: true,
+          position: 'top',
+          icon: 'success',
+          title: `Added ${rows.length} items from Excel!`,
+          timer: 2500,
+          showConfirmButton: false
+        });
       }
     } catch (err) {
       console.error('Excel parse error:', err);

@@ -303,11 +303,6 @@ export default function Menu() {
           <button><i className="fa-solid fa-address-card"></i><span>Profile</span></button>
         </Link>
       </footer>
-
-      <StockStatusModal
-        isOpen={showStatusModal}
-        onClose={() => setShowStatusModal(false)}
-      />
     </div>
   )
 }
