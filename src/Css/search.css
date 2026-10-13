@@ -234,7 +234,7 @@
   justify-content: space-between;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(8px);
-  min-height: 125px;
+  min-height: 140px;
   box-sizing: border-box;
 }
 
