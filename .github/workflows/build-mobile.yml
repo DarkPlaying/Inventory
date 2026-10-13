@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: App-Simulator-appetize
-          path: App-Simulator-appetize.zip
+          path: ios/App/derived_data/Build/Products/Debug-iphonesimulator/App.app
 
       - name: Build Xcode Device Archive (for real iPhones)
         run: |
