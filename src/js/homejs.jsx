@@ -19,6 +19,25 @@ const getCachedOverview = () => {
   return null
 }
 
+const ALERT_DATE_KEY = 'last_out_of_stock_alert_date'
+
+const shouldShowDailyAlert = () => {
+  try {
+    const today = new Date().toISOString().slice(0, 10)
+    const lastDate = localStorage.getItem(ALERT_DATE_KEY)
+    return lastDate !== today
+  } catch (_) {
+    return true
+  }
+}
+
+const markDailyAlertShown = () => {
+  try {
+    const today = new Date().toISOString().slice(0, 10)
+    localStorage.setItem(ALERT_DATE_KEY, today)
+  } catch (_) {}
+}
+
 const formatNames = (list) => {
   const names = list.map(x => x.name).filter(Boolean)
   if (names.length === 0) return ""
@@ -38,7 +57,6 @@ export function useHomeLogic() {
   const [sales, settotalsales] = useState(cached?.sales ?? 0)
   const [items, setItems] = useState(cached?.items ?? [])
   const [toast, setToast] = useState(null)
-  const userDismissedAlert = useRef(false)
 
   const showToast = (message, type = "error") => {
     setToast({ message, type })
@@ -46,19 +64,21 @@ export function useHomeLogic() {
 
   const handleSetToast = (val) => {
     if (val === null) {
-      userDismissedAlert.current = true
+      markDailyAlertShown()
     }
     setToast(val)
   }
 
-  // Show starting alert immediately from cache on mount if available
+  // Show starting alert once daily from cache on mount if available
   useEffect(() => {
-    if (cached?.items && Array.isArray(cached.items) && !userDismissedAlert.current) {
+    if (shouldShowDailyAlert() && cached?.items && Array.isArray(cached.items)) {
       const outCached = cached.items.filter(x => Number(x.quantity) < 20 || x.status === 'OUT')
       const lowCached = cached.items.filter(x => Number(x.quantity) >= 20 && Number(x.quantity) < 30 && x.status !== 'OUT')
       if (outCached.length > 0) {
+        markDailyAlertShown()
         showToast(`Out of stock: ${formatNames(outCached)}`, "error")
       } else if (lowCached.length > 0) {
+        markDailyAlertShown()
         showToast(`Low stock: ${formatNames(lowCached)}`, "warning")
       }
     }
@@ -100,11 +120,13 @@ export function useHomeLogic() {
             }))
           } catch (_) {}
 
-          // Show out of stock alert at starting overview
-          if (!userDismissedAlert.current) {
+          // Show out of stock alert only once daily
+          if (shouldShowDailyAlert()) {
             if (outItems.length > 0) {
+              markDailyAlertShown()
               showToast(`Out of stock: ${formatNames(outItems)}`, "error")
             } else if (lowItems.length > 0) {
+              markDailyAlertShown()
               showToast(`Low stock: ${formatNames(lowItems)}`, "warning")
             }
           }
