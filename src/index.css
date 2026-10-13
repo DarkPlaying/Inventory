@@ -2,45 +2,40 @@
 @import "tailwindcss/utilities.css";
 
 :root {
-  --app-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --app-font: 'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-html, body {
+html,
+body {
   font-family: var(--app-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Apply app font to text elements while excluding icon classes */
-button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, label, strong, b, em, li, td, th {
-  font-family: var(--app-font);
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
-span:not([class*="fa-"]), div:not([class*="fa-"]), a:not([class*="fa-"]) {
-  font-family: var(--app-font);
+/* Ensure Font Awesome icons always use the Font Awesome font and are not overridden */
+.fa,
+.fas,
+.far,
+.fal,
+.fad,
+.fab,
+.fa-solid,
+.fa-regular,
+.fa-brands,
+[class*="fa-"],
+[class*="fa-"]::before,
+[class*="fa-"]::after {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", FontAwesome !important;
+  font-style: normal;
 }
 
-/* Explicitly enforce Font Awesome fonts on all icons */
-.fa, .fas, .far, .fal, .fad, .fab, .fa-solid, .fa-regular, .fa-brands, [class*="fa-"], [class*="fa-"]::before {
-  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
-  font-style: normal !important;
-  letter-spacing: normal !important;
-}
-
-.fa-solid, .fas, .fa-solid::before, .fas::before {
-  font-family: "Font Awesome 6 Free" !important;
-  font-weight: 900 !important;
-}
-
-.fa-regular, .far, .fa-regular::before, .far::before {
-  font-family: "Font Awesome 6 Free" !important;
-  font-weight: 400 !important;
-}
-
-.fa-brands, .fab, .fa-brands::before, .fab::before {
-  font-family: "Font Awesome 6 Brands" !important;
-  font-weight: 400 !important;
-}
 
 /* Universal Top Navigation Header Spacing across all sections */
 .navi,
@@ -192,13 +187,25 @@ span:not([class*="fa-"]), div:not([class*="fa-"]), a:not([class*="fa-"]) {
 }
 
 @keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes modalScaleUp {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Shared Modal Overlay & Status Box */

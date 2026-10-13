@@ -62,18 +62,21 @@ body {
   font-size: 15px;
   padding-top: 5px;
 }
-.user i{
+
+.user i {
   text-align: left;
   direction: rtl;
 }
-.image img{
+
+.image img {
   width: 90%;
   margin: 10px;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
 }
-.circle img{
+
+.circle img {
   width: 70px;
   height: 70px;
   margin: 10px;
@@ -81,96 +84,61 @@ body {
   border-radius: 100%;
 
 }
+
 .navi {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgb(255, 255, 255, 0.6);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 10px;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 5px 10px;
+  background: rgb(255, 255, 255, 0.3);
   height: 52px;
   border-radius: 15px;
   font-family: var(--app-font);
-  margin-top: max(50px, calc(env(safe-area-inset-top, 44px) + 12px)) !important;
-  box-sizing: border-box;
-  gap: 8px;
+  margin-top: max(50px, calc(env(safe-area-inset-top, 44px) + 12px));
 }
 
-.navi-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.navi-menu-btn {
-  background: transparent;
-  border: none;
-  padding: 4px;
+.navi i {
+  font-size: 22px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: black;
-  font-size: 18px;
 }
 
-.navi-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: black;
+.fa-bars {
+  font-size: 22px;
 }
 
-.navi-search-box {
-  flex: 1;
-  min-width: 0;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  gap: 6px;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.65);
-  font-size: 12px;
-  transition: all 0.2s ease;
-}
-
-.navi-search-box i {
-  font-size: 13px;
-  opacity: 0.7;
-}
-
-.navi-search-box span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.navi-icons {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.navi-icons i {
-  font-size: 20px;
-  cursor: pointer;
-  color: black;
-}
-
-.navi-icons a {
+.navi a {
   display: flex;
   align-items: center;
   color: inherit;
   text-decoration: none;
+}
+
+.navi input {
+  background-color: rgb(255, 255, 255, 0.4);
+  border-radius: 15px;
+  border: 1px solid rgba(118, 118, 118, 0.6);
+  height: 24px;
+}
+
+.navi input::placeholder {
+  font-family: var(--app-font);
+  color: black;
+  padding-left: 10px;
+}
+
+.navi input:active {
+  border: 1px solid rgb(1, 1, 1);
+}
+
+.navi span {
+  padding-bottom: 5px;
+}
+
+.navi button {
+  border: none;
 }
 
 .footer {
@@ -181,13 +149,11 @@ body {
   border: 1px solid rgba(154, 153, 153, 0.6);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 10px;
-  margin-bottom: max(10px, calc(env(safe-area-inset-bottom, 20px) + 6px));
   padding: 6px;
-  min-height: 54px;
+  min-height: 60px;
   border-radius: 15px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgb(0, 0, 0, 0.3);
   gap: 8px;
-  box-sizing: border-box;
 }
 
 .footer a {
@@ -201,7 +167,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   border: 1px solid rgba(141, 141, 141, 0.6);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 0;
@@ -212,12 +178,11 @@ body {
   flex: 1;
   border-radius: 12px;
   cursor: pointer;
-  padding: 0 6px;
-  font-size: 13px;
+  padding: 0 10px;
 }
 
-.footer button i {
-  font-size: 14px;
+.footer button span {
+  padding-left: 5px;
 }
 
 .iteams {
@@ -225,23 +190,23 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin: 0 6px;
+  font-size: 13px;
 }
 
 .iteamtotal {
   margin: 0 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
 }
 
-.iteam-revenue {
-  background-color: rgba(239, 68, 68, 0.22);
-  color: #dc2626;
-  border: 1px solid rgba(239, 68, 68, 0.4);
+.iteamtotal div {
+  background-color: rgba(248, 56, 56, 0.3);
+  color: red;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-weight: 900;
+  font-size: 17px;
   font-family: var(--app-font);
   height: 46px;
   border-radius: 12px;
@@ -249,48 +214,22 @@ body {
 
 .iteam {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   border: 1px solid rgba(158, 157, 157, 0.6);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 0;
-  padding: 6px 4px;
-  background: rgba(255, 255, 255, 0.4);
-  height: 62px;
+  padding: 4px;
+  background: rgb(255, 255, 255, 0.3);
+  height: 60px;
   border-radius: 12px;
+  font-weight: 700;
   text-align: center;
-  gap: 2px;
-  box-sizing: border-box;
+  line-height: 1.25;
 }
 
-.iteam-alert {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.5);
-}
-
-.iteam-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: #4b5563;
-  line-height: 1.1;
-}
-
-.iteam-alert .iteam-title {
-  color: #b91c1c;
-}
-
-.iteam-count {
-  font-size: 18px;
-  font-weight: 800;
-  color: #1f2937;
-}
-
-.iteam-alert .iteam-count {
-  color: #dc2626;
-}
-.graph{
-  border: 1px solid rgb(255, 255, 255,0.6);
+.graph {
+  border: 1px solid rgb(255, 255, 255, 0.6);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   margin: 0 6px;
   padding: 6px 10px;
@@ -300,20 +239,22 @@ body {
   position: relative;
   overflow: hidden;
 }
-.graph img{
+
+.graph img {
   height: 200px;
   width: 100%;
   border-radius: 15px;
   margin-top: 6px;
 }
 
-.graph h1{
+.graph h1 {
   font-family: var(--app-font);
   text-align: center;
   margin: 5px 0 0;
-  color: rgb(0, 0, 0,0.7);
+  color: rgb(0, 0, 0, 0.7);
 }
-.graph button:not(#btn){
+
+.graph button:not(#btn) {
   font-family: var(--app-font);
   display: flex;
   align-items: center;
@@ -323,13 +264,14 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.3);
   margin: 0;
   color: black;
-  background: rgb(255, 255, 255,0.4);
+  background: rgb(255, 255, 255, 0.4);
   height: 32px;
   border-radius: 10px;
   padding: 0 10px;
   cursor: pointer;
 }
-.graph #btn{
+
+.graph #btn {
   font-family: var(--app-font);
   display: flex;
   align-items: center;
@@ -339,18 +281,20 @@ body {
   border: 1px solid rgba(0, 0, 0, 0.3);
   margin: 0;
   color: black;
-  background: rgb(255, 255, 255,0.4);
+  background: rgb(255, 255, 255, 0.4);
   height: 32px;
   border-radius: 10px;
   padding: 0 10px;
   cursor: pointer;
 }
-.iteams .iteam{
+
+.iteams .iteam {
   margin: 0;
-  background: rgb(248, 144, 248,0.2);
-  border: 1px solid rgb(129, 129, 129,0.8);
+  background: rgb(248, 144, 248, 0.2);
+  border: 1px solid rgb(129, 129, 129, 0.8);
 }
-.fa-circle-chevron-left{
+
+.fa-circle-chevron-left {
   font-size: 36px;
   position: absolute;
   left: 12px;
@@ -359,7 +303,8 @@ body {
   opacity: 0.8;
   cursor: pointer;
 }
-.fa-circle-chevron-right{
+
+.fa-circle-chevron-right {
   font-size: 36px;
   position: absolute;
   right: 12px;
@@ -368,7 +313,8 @@ body {
   opacity: 0.8;
   cursor: pointer;
 }
-.graph .fa-chart-line{
+
+.graph .fa-chart-line {
   font-size: 130px;
   opacity: 0.7;
   position: absolute;
@@ -415,7 +361,8 @@ body {
   margin-bottom: 10px;
 }
 
-.sidebar a, .sidebar-item {
+.sidebar a,
+.sidebar-item {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -430,13 +377,23 @@ body {
 }
 
 @keyframes slideIn {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* Stock Pie Chart Modal Styles */

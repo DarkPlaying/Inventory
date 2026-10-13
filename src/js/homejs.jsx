@@ -5,19 +5,30 @@ import Swal from 'sweetalert2'
 let sessionToastCount = 0
 
 const COLORS = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', 
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444',
   '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
 ]
 
+const OVERVIEW_CACHE_KEY = 'inventory_overview_cache'
+
+const getCachedOverview = () => {
+  try {
+    const raw = localStorage.getItem(OVERVIEW_CACHE_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch (_) {}
+  return null
+}
+
 export function useHomeLogic() {
+  const cached = getCachedOverview()
   const [open, setOpen] = useState(false)
   const [showGraphModal, setShowGraphModal] = useState(false)
   const [showStatusModal, setShowStatusModal] = useState(false)
-  const [totalf, settotalf] = useState(0)
-  const [totaliteam, settotaliteam] = useState(0)
-  const [outstock, setoutstock] = useState(0)
-  const [sales, settotalsales] = useState(0)
-  const [items, setItems] = useState([])
+  const [totalf, settotalf] = useState(cached?.totalf ?? 0)
+  const [totaliteam, settotaliteam] = useState(cached?.totaliteam ?? 0)
+  const [outstock, setoutstock] = useState(cached?.outstock ?? 0)
+  const [sales, settotalsales] = useState(cached?.sales ?? 0)
+  const [items, setItems] = useState(cached?.items ?? [])
   const [toast, setToast] = useState(null)
 
   const showToast = (message, type = "error") => {
@@ -25,43 +36,80 @@ export function useHomeLogic() {
   }
 
   useEffect(() => {
-    let retryTimer = null
+    let retryTimeout = null
 
-    async function Grandtotal() {
+    async function Grandtotal(retries = 3) {
       try {
         const { data, error } = await supabase.from('items').select('*')
-        if (data) {
+        if (data && Array.isArray(data)) {
           setItems(data)
-          const t = data.reduce((a, x) => a + (Number(x.total_price) || 0), 0)
+          const t = data.reduce((a, x) => {
+            const tp = Number(x.total_price)
+            if (!isNaN(tp) && tp > 0) return a + tp
+            const p = Number(x.price) || 0
+            const q = Number(x.quantity) || 0
+            return a + (p * q)
+          }, 0)
           settotalf(t)
           settotaliteam(data.length)
 
           const outItems = data.filter(x => Number(x.quantity) < 20 || x.status === 'OUT')
+          const lowItems = data.filter(x => Number(x.quantity) >= 20 && Number(x.quantity) < 30 && x.status !== 'OUT')
           setoutstock(outItems.length)
 
           const totalQty = data.reduce((a, x) => a + (Number(x.quantity) || 0), 0)
           settotalsales(totalQty)
+
+          // Persist to cache so startup always shows live numbers instantly
+          try {
+            localStorage.setItem(OVERVIEW_CACHE_KEY, JSON.stringify({
+              totalf: t,
+              totaliteam: data.length,
+              outstock: outItems.length,
+              sales: totalQty,
+              items: data
+            }))
+          } catch (_) {}
+
+          const formatNames = (list) => {
+            const names = list.map(x => x.name).filter(Boolean)
+            if (names.length === 0) return ""
+            if (names.length === 1) return names[0]
+            if (names.length === 2) return `${names[0]}, ${names[1]}`
+            return `${names[0]}, ${names[1]}..`
+          }
+
+          // No automatic popup alert on page load/refresh
         } else if (error) {
-          console.warn("Could not fetch items, retrying in 3s:", error.message)
-          retryTimer = setTimeout(Grandtotal, 3000)
+          if (retries > 0) {
+            retryTimeout = setTimeout(() => Grandtotal(retries - 1), 2000)
+          }
         }
       } catch (err) {
-        console.warn("Network error during fetch, retrying in 3s:", err.message)
-        retryTimer = setTimeout(Grandtotal, 3000)
+        if (retries > 0) {
+          retryTimeout = setTimeout(() => Grandtotal(retries - 1), 2000)
+        }
       }
     }
 
     Grandtotal()
 
+    const handleOnline = () => Grandtotal(2)
+    const handleFocus = () => Grandtotal(1)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('focus', handleFocus)
+
     const channel = supabase
       .channel('items-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, () => {
-        Grandtotal()
+        Grandtotal(1)
       })
       .subscribe()
 
     return () => {
-      if (retryTimer) clearTimeout(retryTimer)
+      if (retryTimeout) clearTimeout(retryTimeout)
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('focus', handleFocus)
       supabase.removeChannel(channel)
     }
   }, [])

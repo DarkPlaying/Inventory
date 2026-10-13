@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import { supabase } from '../supabase';
 import {
   sendStockChangeNotification,
-  checkAndTriggerDailyStockNotification
+  checkAndTriggerDailyStockNotification,
+  requestNotificationPermission
 } from '../js/notificationService';
 
 /**
@@ -14,9 +15,19 @@ import {
 export default function StockNotification() {
   const isFirstLoad = useRef(true);
 
-  // 1. Once-per-day stock notification check
+  // 1. Request notification permission on first launch (shows iOS system prompt) & check daily notification
   useEffect(() => {
-    checkAndTriggerDailyStockNotification();
+    async function initNotifications() {
+      try {
+        const hasPrompted = localStorage.getItem('has_requested_notifications');
+        if (!hasPrompted) {
+          localStorage.setItem('has_requested_notifications', 'true');
+          await requestNotificationPermission();
+        }
+      } catch (_) {}
+      checkAndTriggerDailyStockNotification();
+    }
+    initNotifications();
   }, []);
 
   // 2. Listen to database realtime changes (INSERT, UPDATE, DELETE)

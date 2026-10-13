@@ -17,9 +17,15 @@ export default function SwipeToReload({ children }) {
 
     const handleTouchMove = (e) => {
       if (!isTracking.current || reloading) return;
+      // Only allow pull-to-refresh when user is near the top of the page
+      if (window.scrollY > 15) {
+        setPullDistance(0);
+        return;
+      }
+
       const currentY = e.touches[0].clientY;
       const currentX = e.touches[0].clientX;
-      const diffY = touchStartY.current - currentY; // positive = swipe up
+      const diffY = currentY - touchStartY.current; // positive = swipe down / pull down
       const diffX = Math.abs(currentX - touchStartX.current);
 
       // Ignore if user is mainly swiping horizontally
@@ -28,7 +34,7 @@ export default function SwipeToReload({ children }) {
         return;
       }
 
-      // Only trigger reload when user swipes UP
+      // Only trigger reload when user pulls DOWN from the top
       if (diffY > 65) {
         setPullDistance(Math.min(diffY, 100));
       } else {
@@ -40,7 +46,7 @@ export default function SwipeToReload({ children }) {
       if (!isTracking.current || reloading) return;
       isTracking.current = false;
 
-      if (pullDistance >= 60) {
+      if (pullDistance >= 65) {
         triggerReload();
       } else {
         setPullDistance(0);
@@ -108,7 +114,7 @@ export default function SwipeToReload({ children }) {
               transform: reloading ? 'none' : `rotate(${pullDistance * 3.6}deg)`
             }}
           ></i>
-          <span>{reloading ? 'Reloading...' : pullDistance >= 65 ? 'Release to reload' : 'Swipe up to reload'}</span>
+          <span>{reloading ? 'Reloading...' : pullDistance >= 65 ? 'Release to reload' : 'Pull down to reload'}</span>
         </div>
       )}
       {children}
