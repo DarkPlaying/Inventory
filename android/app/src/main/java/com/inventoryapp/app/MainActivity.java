@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.BridgeWebChromeClient;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -29,6 +30,7 @@ public class MainActivity extends BridgeActivity {
         createNotificationChannel();
         checkAndRequestNotificationPermission();
         checkAndRequestCameraPermission();
+        checkAndRequestStoragePermission();
         setupDownloadListener();
         setupCameraPermissionHandler();
     }
@@ -39,9 +41,21 @@ public class MainActivity extends BridgeActivity {
         }
     }
 
+    private void checkAndRequestStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 103);
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 103);
+            }
+        }
+    }
+
     private void setupCameraPermissionHandler() {
         if (getBridge() != null && getBridge().getWebView() != null) {
-            getBridge().getWebView().setWebChromeClient(new android.webkit.WebChromeClient() {
+            getBridge().getWebView().setWebChromeClient(new BridgeWebChromeClient(getBridge()) {
                 @Override
                 public void onPermissionRequest(final android.webkit.PermissionRequest request) {
                     runOnUiThread(new Runnable() {
@@ -89,7 +103,7 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 102) {
+        if (requestCode == 102 || requestCode == 103) {
             setupCameraPermissionHandler();
         }
     }

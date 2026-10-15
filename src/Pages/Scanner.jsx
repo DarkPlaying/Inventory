@@ -183,7 +183,7 @@ export default function Scanner() {
             type="button"
             className="scanner-ctrl-btn"
             onClick={() => fileInputRef.current?.click()}
-            title="Scan from Photo or Gallery"
+            title="Scan from Photo or Gallery (Images Only)"
           >
             <i className="fa-solid fa-image"></i>
             <span>Photo / File</span>
@@ -191,11 +191,12 @@ export default function Scanner() {
           <input
             type="file"
             ref={fileInputRef}
-            accept="image/*"
+            accept="image/png,image/jpeg,image/jpg,image/webp,image/*"
             style={{ display: 'none' }}
             onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
                 handleFileUploadScan(e.target.files[0]);
+                e.target.value = '';
               }
             }}
           />

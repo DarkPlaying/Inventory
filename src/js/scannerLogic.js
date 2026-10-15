@@ -462,6 +462,18 @@ export function useScannerLogic() {
 
   const handleFileUploadScan = async (file) => {
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Images Only',
+        text: 'Please select an image file (.png, .jpg, .jpeg, .webp). Other formats are not allowed.',
+        toast: true,
+        position: 'top',
+        timer: 3000,
+        showConfirmButton: false
+      });
+      return;
+    }
     try {
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode('scanner-viewfinder');
