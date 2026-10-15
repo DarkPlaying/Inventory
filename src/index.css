@@ -14,8 +14,6 @@ body,
   max-width: 100vw;
   overflow-x: hidden !important;
   position: relative;
-  background-color: #ffffff;
-  background: #ffffff;
   font-family: var(--app-font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -12,8 +12,10 @@ body {
   max-width: 100vw;
   box-sizing: border-box;
   overflow: hidden;
-  background: #ffffff;
-  background-color: #ffffff;
+  background: url("https://i.pinimg.com/736x/56/17/d6/5617d6088a5794f177425ae6780041dd.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
