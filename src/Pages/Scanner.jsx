@@ -533,19 +533,19 @@ export default function Scanner() {
 
       {/* Floating Bottom Footer - Universal auto-scaled tabs */}
       <footer className="footer">
-        <Link to="/" style={{ textDecoration: 'none' }}>
+        <Link to="/" style={{ textDecoration: 'none', display: 'flex', flex: 1, minWidth: 0 }}>
           <button><i className="fa-solid fa-chart-column"></i><span>Overview</span></button>
         </Link>
-        <Link to="/menu" style={{ textDecoration: 'none' }}>
+        <Link to="/menu" style={{ textDecoration: 'none', display: 'flex', flex: 1, minWidth: 0 }}>
           <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
         </Link>
-        <Link to="/scanner" style={{ textDecoration: 'none' }}>
+        <Link to="/scanner" style={{ textDecoration: 'none', display: 'flex', flex: 1, minWidth: 0 }}>
           <button className="active-nav"><i className="fa-solid fa-receipt"></i><span>Billing</span></button>
         </Link>
-        <Link to="/business" style={{ textDecoration: 'none' }}>
+        <Link to="/business" style={{ textDecoration: 'none', display: 'flex', flex: 1, minWidth: 0 }}>
           <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>
         </Link>
-        <Link to="/profile" style={{ textDecoration: 'none' }}>
+        <Link to="/profile" style={{ textDecoration: 'none', display: 'flex', flex: 1, minWidth: 0 }}>
           <button><i className="fa-solid fa-address-card"></i><span>Profile</span></button>
         </Link>
       </footer>

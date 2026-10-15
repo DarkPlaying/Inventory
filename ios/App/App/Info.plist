@@ -64,6 +64,39 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>open_tasks</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Today's Stock Tasks &amp; Aiming</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>View today and tomorrow reminders</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeTask</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>open_stock</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Stock Reminder Alerts</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Check low and out-of-stock items</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeSearch</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>open_billing</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Billing &amp; POS</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Quick scan &amp; checkout</string>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeCompose</string>
+		</dict>
+	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>

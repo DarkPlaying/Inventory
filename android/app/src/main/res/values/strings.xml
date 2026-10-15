@@ -4,4 +4,6 @@
     <string name="title_activity_main">InventoryApp</string>
     <string name="package_name">com.inventoryapp.app</string>
     <string name="custom_url_scheme">com.inventoryapp.app</string>
+    <string name="widget_name">Stock &amp; Tasks Reminder</string>
+    <string name="widget_description">Shows low stock alerts and today &amp; tomorrow stock tasks reminder</string>
 </resources>

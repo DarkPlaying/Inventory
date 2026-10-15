@@ -4,6 +4,8 @@ import dashboardImg from '../assets/dashboard.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { useHomeLogic } from '../js/homejs'
 import StockStatusModal from '../Components/StockStatusModal'
+import StockTasksModal from '../Components/StockTasksModal'
+import { getStoredTasks, getTodayDateString, getTomorrowDateString, fetchTasksFromDB } from '../js/taskLogic'
 import { PieChart, LineChart, RadarChart } from '../Components/Graphs'
 
 const Home = () => {
@@ -22,6 +24,44 @@ const Home = () => {
     totalQuantity, conicGradient, pieSlices,
     downloadPieChart
   } = useHomeLogic()
+
+  // Stock Aiming & Tasks State
+  const [showTasksModal, setShowTasksModal] = React.useState(false)
+  const [tasksList, setTasksList] = React.useState(() => getStoredTasks())
+
+  React.useEffect(() => {
+    fetchTasksFromDB(items).then(res => {
+      if (res && res.tasks) setTasksList(res.tasks)
+    })
+  }, [items])
+
+  const todayStr = getTodayDateString()
+  const tomorrowStr = getTomorrowDateString()
+
+  const todayTasks = React.useMemo(() => {
+    return tasksList.filter(t => t.dueDate === todayStr && t.status !== 'completed')
+  }, [tasksList, todayStr])
+
+  const tomorrowTasks = React.useMemo(() => {
+    return tasksList.filter(t => t.dueDate === tomorrowStr && t.status !== 'completed')
+  }, [tasksList, tomorrowStr])
+
+  const urgentTasksCount = todayTasks.length + tomorrowTasks.length
+
+  const tasksSummaryText = React.useMemo(() => {
+    if (todayTasks.length === 0 && tomorrowTasks.length === 0) {
+      return 'All clear • Tap to set new stock aim targets & tasks'
+    }
+    const parts = []
+    if (todayTasks.length > 0) {
+      const firstAim = todayTasks[0].targetAim ? ` (Aim ${todayTasks[0].targetAim})` : ''
+      parts.push(`Today: ${todayTasks[0].stockItemName || todayTasks[0].title}${firstAim}${todayTasks.length > 1 ? ` +${todayTasks.length - 1}` : ''}`)
+    }
+    if (tomorrowTasks.length > 0) {
+      parts.push(`Tomorrow: ${tomorrowTasks.length} task${tomorrowTasks.length > 1 ? 's' : ''}`)
+    }
+    return parts.join(' • ')
+  }, [todayTasks, tomorrowTasks])
 
   // 3 Graphs: Line (Default), Pie, Radar
   const graphTitles = ['Revenue Line Chart', 'Stock Pie Chart', 'Category Radar Chart']
@@ -193,6 +233,42 @@ const Home = () => {
         >
           <i className="fa-solid fa-barcode"></i>
         </button>
+        <button
+          type="button"
+          onClick={() => setShowTasksModal(true)}
+          title="Stock Tasks & Aiming"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '4px 6px',
+            fontSize: '18px',
+            color: '#1e293b',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'relative'
+          }}
+        >
+          <i className="fa-solid fa-bullseye"></i>
+          {urgentTasksCount > 0 && (
+            <span style={{
+              position: 'absolute',
+              top: '-2px',
+              right: '-2px',
+              background: '#ef4444',
+              color: '#ffffff',
+              fontSize: '10px',
+              fontWeight: '800',
+              borderRadius: '10px',
+              padding: '1px 5px',
+              minWidth: '14px',
+              textAlign: 'center',
+              lineHeight: '1.2'
+            }}>
+              {urgentTasksCount}
+            </span>
+          )}
+        </button>
         <i className="fa-regular fa-bell" style={{ cursor: 'pointer' }} onClick={() => setShowStatusModal(true)}></i>
         <Link to="/profile" >
           <i className="fa-solid fa-circle-user"></i></Link>
@@ -200,6 +276,27 @@ const Home = () => {
 
       {/* Main Content - Modern Analytics Dashboard UI */}
       <main className="dashboard-main">
+        {/* Stock Aiming & Daily Tasks Banner */}
+        <div className="home-task-aim-banner" onClick={() => setShowTasksModal(true)}>
+          <div className="task-aim-banner-left">
+            <div className="task-aim-banner-icon">
+              <i className="fa-solid fa-bullseye"></i>
+            </div>
+            <div className="task-aim-banner-info">
+              <div className="task-aim-banner-title">
+                <span>Stock Aiming &amp; Tasks</span>
+                <span className="task-aim-banner-pill">Daily Reminder</span>
+              </div>
+              <p className="task-aim-banner-sub">
+                {tasksSummaryText}
+              </p>
+            </div>
+          </div>
+          <button type="button" className="task-aim-banner-action">
+            <span>Tasks</span>
+            <i className="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
         {/* 2x2 Metric Cards Grid */}
         <div className="metrics-grid">
           {/* Card 1: Total Menus */}
@@ -477,6 +574,18 @@ const Home = () => {
       <StockStatusModal
         isOpen={showStatusModal}
         onClose={() => setShowStatusModal(false)}
+      />
+
+      {/* Stock Tasks & Aiming Modal */}
+      <StockTasksModal
+        isOpen={showTasksModal}
+        onClose={() => {
+          setShowTasksModal(false)
+          setTasksList(getStoredTasks())
+        }}
+        items={items}
+        totaliteam={totaliteam}
+        lowStock={outstock}
       />
 
       {/* Footer Navigation */}

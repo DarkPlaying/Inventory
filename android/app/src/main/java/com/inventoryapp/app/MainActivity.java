@@ -25,12 +25,14 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        registerPlugin(StockWidgetPlugin.class);
         super.onCreate(savedInstanceState);
         createNotificationChannel();
         checkAndRequestNotificationPermission();
         checkAndRequestCameraPermission();
         checkAndRequestStoragePermission();
         setupDownloadListener();
+        StockWidgetProvider.notifyDataChanged(this);
     }
 
     private void checkAndRequestCameraPermission() {

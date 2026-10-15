@@ -1002,51 +1002,68 @@
 .scanner-page .footer a {
   text-decoration: none;
   display: flex;
-  flex: 1;
+  flex: 1 1 0%;
+  min-width: 0;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .scanner-page .footer button {
   font-family: var(--app-font);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2px;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  margin: 0;
-  color: black;
-  background: white;
-  height: 44px;
-  width: 100%;
-  flex: 1;
-  min-width: 0;
-  border-radius: 12px;
-  cursor: pointer;
-  padding: 2px 2px;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  gap: 2px !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  margin: 0 !important;
+  color: black !important;
+  background: white !important;
+  height: 44px !important;
+  width: 100% !important;
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  padding: 2px !important;
+  box-sizing: border-box !important;
   transition: all 0.15s;
 }
 
 .scanner-page .footer button i {
-  font-size: 15px;
+  font-size: 15px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  line-height: 1 !important;
 }
 
 .scanner-page .footer button span {
-  font-size: clamp(8.5px, 2.3vw, 10.5px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  text-align: center;
-  padding: 0;
+  font-size: clamp(8.5px, 2.3vw, 10.5px) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  display: block !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  line-height: 1.1 !important;
+  padding: 0 !important;
 }
 
 .scanner-page .footer button.active-nav {
-  background: #2563eb;
-  color: #ffffff;
+  background: #2563eb !important;
+  color: #ffffff !important;
 }
 
 .scanner-page .footer button.active-nav i,
 .scanner-page .footer button.active-nav span {
-  color: #ffffff;
+  color: #ffffff !important;
 }

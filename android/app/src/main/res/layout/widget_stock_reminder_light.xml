@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_bg_light"
+    android:padding="12dp">
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📦 Stock &amp; Aiming Reminder"
+            android:textColor="#0f172a"
+            android:textStyle="bold"
+            android:textSize="12.5sp" />
+
+        <!-- Quick One-Tap Theme Switcher -->
+        <TextView
+            android:id="@+id/widget_theme_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/widget_theme_btn_bg"
+            android:text="🌓 Theme"
+            android:textColor="#334155"
+            android:textStyle="bold"
+            android:textSize="9.5sp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:layout_marginEnd="6dp" />
+
+        <TextView
+            android:id="@+id/widget_sync_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Live Sync"
+            android:textColor="#2563eb"
+            android:textStyle="bold"
+            android:textSize="9.5sp" />
+    </LinearLayout>
+
+    <!-- Metrics Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <!-- Total Items Badge -->
+        <TextView
+            android:id="@+id/widget_total_items"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/widget_inner_box_light"
+            android:text="Items: 0"
+            android:textColor="#1d4ed8"
+            android:textSize="10.5sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+
+        <!-- Low Stock Badge -->
+        <TextView
+            android:id="@+id/widget_low_stock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/widget_inner_box_light"
+            android:text="Low: 0"
+            android:textColor="#b45309"
+            android:textSize="10.5sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+
+        <!-- Out of Stock Badge -->
+        <TextView
+            android:id="@+id/widget_out_stock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/widget_inner_box_light"
+            android:text="Out: 0"
+            android:textColor="#dc2626"
+            android:textSize="10.5sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+    </LinearLayout>
+
+    <!-- Tasks Box -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@drawable/widget_inner_box_light"
+        android:padding="8dp">
+
+        <!-- Today Tasks -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎯 TODAY'S STOCK AIM &amp; TASKS:"
+            android:textColor="#64748b"
+            android:textSize="9.5sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_today_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No pending tasks today. All stocks on track!"
+            android:textColor="#0f172a"
+            android:textStyle="bold"
+            android:textSize="10.5sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="3dp" />
+
+        <!-- Tomorrow Tasks -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏳ TOMORROW:"
+            android:textColor="#64748b"
+            android:textSize="9.5sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_tomorrow_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="All clear for tomorrow."
+            android:textColor="#334155"
+            android:textSize="10.5sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_marginTop="1dp" />
+    </LinearLayout>
+
+    <!-- Quick Open Footer Button -->
+    <TextView
+        android:id="@+id/widget_btn_open"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/widget_btn_bg"
+        android:text="Open App &amp; Manage Stock Tasks  ➔"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:textSize="11sp"
+        android:gravity="center"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:layout_marginTop="8dp" />
+</LinearLayout>
