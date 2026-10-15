@@ -344,3 +344,107 @@ body.swal2-height-auto {
   margin-right: 6px;
   color: #f59e0b !important;
 }
+
+/* Universal Floating Footer with Auto-Scaling Text for Mobile Screens */
+.footer,
+.menu-page .footer,
+.search-page .footer,
+.scanner-page .footer {
+  font-family: var(--app-font) !important;
+  position: fixed !important;
+  bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  left: 8px !important;
+  right: 8px !important;
+  width: calc(100% - 16px) !important;
+  max-width: 500px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  border: none !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28) !important;
+  padding: 4px !important;
+  min-height: 52px !important;
+  border-radius: 16px !important;
+  background: rgba(0, 0, 0, 0.42) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  gap: 4px !important;
+  z-index: 9999 !important;
+}
+
+.footer a,
+.menu-page .footer a,
+.search-page .footer a,
+.scanner-page .footer a {
+  text-decoration: none !important;
+  display: flex !important;
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+}
+
+.footer button,
+.menu-page .footer button,
+.search-page .footer button,
+.scanner-page .footer button {
+  font-family: var(--app-font) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 2px !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  margin: 0 !important;
+  color: #111827 !important;
+  background: #ffffff !important;
+  height: 44px !important;
+  width: 100% !important;
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  padding: 2px 2px !important;
+  box-sizing: border-box !important;
+  transition: all 0.15s ease !important;
+}
+
+.footer button i,
+.menu-page .footer button i,
+.search-page .footer button i,
+.scanner-page .footer button i {
+  font-size: 15px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+.footer button span,
+.menu-page .footer button span,
+.search-page .footer button span,
+.scanner-page .footer button span {
+  font-size: clamp(8.5px, 2.3vw, 10.5px) !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  line-height: 1.1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.footer button.active-nav,
+.menu-page .footer button.active-nav,
+.scanner-page .footer button.active-nav {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+.footer button.active-nav i,
+.footer button.active-nav span,
+.scanner-page .footer button.active-nav i,
+.scanner-page .footer button.active-nav span {
+  color: #ffffff !important;
+}

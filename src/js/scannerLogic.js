@@ -355,47 +355,56 @@ export function useScannerLogic() {
         await scanner.stop();
       }
 
-      const devices = await Html5Qrcode.getCameras();
-      setAvailableCameras(devices || []);
-
-      let targetCameraConfig = { facingMode: 'environment' };
-
-      if (preferCameraId) {
-        targetCameraConfig = preferCameraId;
-        setCurrentCameraId(preferCameraId);
-      } else if (devices && devices.length > 0) {
-        // Try to pick back/environment camera
-        const backCam = devices.find(d => /back|rear|environment/i.test(d.label)) || devices[devices.length - 1];
-        targetCameraConfig = backCam.id;
-        setCurrentCameraId(backCam.id);
-      }
+      const targetCameraConfig = preferCameraId ? preferCameraId : { facingMode: 'environment' };
 
       const qrboxFunction = (viewfinderWidth, viewfinderHeight) => {
         const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-        const qrboxSize = Math.floor(minEdge * 0.75);
+        const qrboxSize = Math.floor(minEdge * 0.85);
         return {
           width: qrboxSize,
-          height: Math.floor(qrboxSize * 0.7) // Wide box ideal for linear barcodes & QR
+          height: Math.floor(qrboxSize * 0.65) // Wide box for retail barcodes & QR
         };
       };
 
-      await scanner.start(
-        targetCameraConfig,
-        {
-          fps: 12,
-          qrbox: qrboxFunction,
-          aspectRatio: 1.0,
-          showTorchButtonIfSupported: true
-        },
-        (decodedText) => {
-          handleBarcodeDecoded(decodedText);
-        },
-        () => {
-          // Frame read non-matches (ignore)
-        }
-      );
+      try {
+        await scanner.start(
+          targetCameraConfig,
+          {
+            fps: 15,
+            qrbox: qrboxFunction,
+            aspectRatio: 1.0,
+            showTorchButtonIfSupported: true
+          },
+          (decodedText) => {
+            handleBarcodeDecoded(decodedText);
+          },
+          () => {}
+        );
+      } catch (startErr) {
+        // Fallback to default camera if environment camera facingMode fails
+        console.warn('Initial camera start failed, trying fallback:', startErr);
+        await scanner.start(
+          { facingMode: 'user' },
+          {
+            fps: 15,
+            qrbox: qrboxFunction,
+            aspectRatio: 1.0
+          },
+          (decodedText) => {
+            handleBarcodeDecoded(decodedText);
+          },
+          () => {}
+        );
+      }
 
       setIsScanning(true);
+
+      // Now query available cameras after permission is granted:
+      Html5Qrcode.getCameras().then(devices => {
+        if (devices && devices.length > 0) {
+          setAvailableCameras(devices);
+        }
+      }).catch(() => {});
 
       // Check torch capability
       try {

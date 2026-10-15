@@ -83,6 +83,15 @@ public class MainActivity extends BridgeActivity {
     public void onResume() {
         super.onResume();
         setupDownloadListener();
+        setupCameraPermissionHandler();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 102) {
+            setupCameraPermissionHandler();
+        }
     }
 
     private void setupDownloadListener() {

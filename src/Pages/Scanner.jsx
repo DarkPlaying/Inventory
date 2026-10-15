@@ -144,36 +144,27 @@ export default function Scanner() {
         </button>
       </div>
 
-      {/* Camera Viewfinder Card */}
+      {/* Camera Viewfinder Card with Red Scan Lines Only */}
       <div className="scanner-card">
         <div className="scanner-viewport-wrapper">
-          <div
-            id="scanner-viewfinder"
-            style={{ display: isScanning ? 'block' : 'none' }}
-          ></div>
+          <div id="scanner-viewfinder"></div>
 
-          {isScanning && (
-            <div className="scanner-laser-box">
-              <div className="scanner-laser-line"></div>
-              <span className="scanner-target-hint">Align barcode inside frame</span>
-            </div>
-          )}
+          {/* Continuous Red Scan Laser & Frame (No Sample Image) */}
+          <div className="scanner-laser-box">
+            <div className="scanner-laser-line"></div>
+            <span className="scanner-target-hint">
+              {isScanning ? 'Align barcode inside frame' : 'Tap Start to activate camera'}
+            </span>
+          </div>
 
           {!isScanning && (
-            <div className="scanner-inactive-prompt">
-              <div className="scanner-cam-icon-circle">
-                <i className="fa-solid fa-camera"></i>
-              </div>
-              <h3 className="scanner-prompt-title">Barcode Scanner</h3>
-              <p className="scanner-prompt-desc">
-                {cameraError ? 'Camera access needed to scan barcodes.' : 'Point camera at product barcode or QR code.'}
-              </p>
-              {cameraError && (
+            <div className="scanner-inactive-overlay">
+              {cameraError ? (
                 <div className="scanner-perm-badge">
                   <i className="fa-solid fa-circle-exclamation"></i>
-                  <span>Permission required</span>
+                  <span>Camera permission required</span>
                 </div>
-              )}
+              ) : null}
               <button
                 type="button"
                 className="scanner-start-cam-btn"

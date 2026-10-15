@@ -210,18 +210,19 @@
   border-radius: 15px;
 }
 
-/* Scanning Overlay & Laser Line */
+/* Scanning Overlay & Red Laser Line */
 .scanner-laser-box {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
-  height: 65%;
-  border: 2px dashed rgba(255, 255, 255, 0.45);
+  width: 82%;
+  height: 68%;
+  border: 2px dashed rgba(239, 68, 68, 0.6);
   border-radius: 12px;
   pointer-events: none;
   box-sizing: border-box;
+  z-index: 6;
 }
 
 .scanner-laser-line {
@@ -229,86 +230,58 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, #ef4444, #f43f5e, #ef4444, transparent);
-  box-shadow: 0 0 12px #ef4444, 0 0 4px #fff;
+  background: linear-gradient(90deg, transparent, #ef4444, #ff2a55, #ef4444, transparent);
+  box-shadow: 0 0 14px #ef4444, 0 0 6px #ff0055;
   animation: scanLaser 2s infinite ease-in-out;
 }
 
 @keyframes scanLaser {
-  0% { top: 5%; opacity: 0.8; }
-  50% { top: 92%; opacity: 1; }
-  100% { top: 5%; opacity: 0.8; }
+  0% { top: 4%; opacity: 0.85; }
+  50% { top: 94%; opacity: 1; }
+  100% { top: 4%; opacity: 0.85; }
 }
 
 .scanner-target-hint {
   position: absolute;
-  bottom: 10px;
+  bottom: 8px;
   left: 0;
   right: 0;
   text-align: center;
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
   pointer-events: none;
 }
 
-/* Camera Inactive Centered View */
-.scanner-inactive-prompt {
+/* Inactive Overlay (No Sample Camera Icon, Clean & Centered) */
+.scanner-inactive-overlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 16px;
-  text-align: center;
-  color: #f8fafc;
-  width: 100%;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 10;
+  padding: 16px;
   box-sizing: border-box;
-}
-
-.scanner-cam-icon-circle {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  background: rgba(37, 99, 235, 0.22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.scanner-cam-icon-circle i {
-  font-size: 26px;
-  color: #60a5fa;
-}
-
-.scanner-prompt-title {
-  margin: 0 0 4px 0;
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.scanner-prompt-desc {
-  margin: 0 0 12px 0;
-  font-size: 12px;
-  color: #94a3b8;
-  max-width: 250px;
-  line-height: 1.4;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 .scanner-perm-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.5);
   color: #fca5a5;
   font-size: 11px;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 20px;
-  margin-bottom: 12px;
 }
 
 .scanner-start-cam-btn {
@@ -1035,6 +1008,7 @@
 .scanner-page .footer button {
   font-family: var(--app-font);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 2px;
@@ -1046,9 +1020,10 @@
   height: 44px;
   width: 100%;
   flex: 1;
+  min-width: 0;
   border-radius: 12px;
   cursor: pointer;
-  padding: 0 5px;
+  padding: 2px 2px;
   transition: all 0.15s;
 }
 
@@ -1057,9 +1032,13 @@
 }
 
 .scanner-page .footer button span {
-  font-size: 11px;
-  font-weight: 600;
-  margin-left: 2px;
+  font-size: clamp(8.5px, 2.3vw, 10.5px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+  padding: 0;
 }
 
 .scanner-page .footer button.active-nav {

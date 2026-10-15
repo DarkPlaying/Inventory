@@ -171,9 +171,11 @@ body {
   flex: 1;
 }
 
-.menu-page .footer button {
+.menu-page .footer button,
+.footer button {
   font-family: var(--app-font);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 2px;
@@ -185,13 +187,24 @@ body {
   height: 44px;
   width: 100%;
   flex: 1;
+  min-width: 0;
   border-radius: 12px;
   cursor: pointer;
-  padding: 0 5px;
+  padding: 2px 2px;
+}
+
+.footer button i {
+  font-size: 15px;
 }
 
 .footer button span {
-  padding-left: 0px;
+  font-size: clamp(8.5px, 2.3vw, 10.5px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+  padding: 0;
 }
 main .container{
     background:rgb(255, 255, 255,0.6) ;
