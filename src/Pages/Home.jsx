@@ -150,6 +150,10 @@ const Home = () => {
               <i className="fa-solid fa-bars"></i>
               <span>Menu</span>
             </Link>
+            <Link to="/scanner" onClick={() => setOpen(false)}>
+              <i className="fa-solid fa-barcode"></i>
+              <span>Product Scanner</span>
+            </Link>
             <Link to="/business" onClick={() => setOpen(false)}>
               <i className="fa-solid fa-briefcase"></i>
               <span>Business</span>
@@ -172,6 +176,23 @@ const Home = () => {
           onClick={() => navigate('/search')}
           readOnly
         />
+        <button
+          type="button"
+          onClick={() => navigate('/scanner')}
+          title="Product Barcode Scanner"
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '4px 6px',
+            fontSize: '18px',
+            color: '#1e293b',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <i className="fa-solid fa-barcode"></i>
+        </button>
         <i className="fa-regular fa-bell" style={{ cursor: 'pointer' }} onClick={() => setShowStatusModal(true)}></i>
         <Link to="/profile" >
           <i className="fa-solid fa-circle-user"></i></Link>
@@ -465,6 +486,9 @@ const Home = () => {
         </Link>
         <Link to="/menu" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
+        </Link>
+        <Link to="/scanner" style={{ textDecoration: 'none' }}>
+          <button><i className="fa-solid fa-barcode"></i><span>Scanner</span></button>
         </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>

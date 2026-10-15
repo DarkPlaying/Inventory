@@ -208,6 +208,9 @@ export default function Business() {
         <Link to="/menu" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
         </Link>
+        <Link to="/scanner" style={{ textDecoration: 'none' }}>
+          <button><i className="fa-solid fa-barcode"></i><span>Scanner</span></button>
+        </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>
         </Link>

@@ -53,7 +53,7 @@ export default function Menu() {
         </div>
       </header>
 
-      {/* Search, Excel & Add Items Buttons */}
+      {/* Search, Scan, Excel & Add Items Buttons */}
       <div className="search">
         <input
           type="text"
@@ -62,6 +62,9 @@ export default function Menu() {
           onChange={(e) => setSearchQuery(e.target.value)}
           onClick={() => navigate('/search')}
         />
+        <button className="search-btn-scan" onClick={() => navigate('/scanner')} title="Product Barcode Scanner">
+          <i className="fa-solid fa-barcode"></i> Scan
+        </button>
         <button className="search-btn-excel" onClick={() => setShowExcelModal(true)}>
           <i className="fa-solid fa-file-excel"></i> Excel
         </button>
@@ -299,6 +302,9 @@ export default function Menu() {
         </Link>
         <Link to="/menu" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
+        </Link>
+        <Link to="/scanner" style={{ textDecoration: 'none' }}>
+          <button><i className="fa-solid fa-barcode"></i><span>Scanner</span></button>
         </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>

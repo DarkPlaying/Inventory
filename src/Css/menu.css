@@ -86,6 +86,17 @@ body {
   flex-shrink: 0;
 }
 
+.search .search-btn-scan {
+  background-color: rgba(37, 99, 235, 0.15);
+  border-color: #2563eb;
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.search .search-btn-scan:hover {
+  background-color: rgba(37, 99, 235, 0.28);
+}
+
 .search .search-btn-excel {
   background-color: rgba(16, 185, 129, 0.18);
   border-color: #10b981;

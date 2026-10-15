@@ -112,6 +112,27 @@ export default function Search() {
             ×
           </button>
         )}
+        <button
+          type="button"
+          className="search-barcode-btn"
+          onClick={() => navigate('/scanner')}
+          title="Scan Product Barcode"
+          style={{
+            background: 'rgba(37, 99, 235, 0.12)',
+            border: 'none',
+            borderRadius: '8px',
+            color: '#2563eb',
+            cursor: 'pointer',
+            padding: '6px 10px',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginLeft: '4px'
+          }}
+        >
+          <i className="fa-solid fa-barcode"></i>
+        </button>
       </div>
 
       {/* Enable Notification Prompt in Search */}
@@ -407,6 +428,9 @@ export default function Search() {
         </Link>
         <Link to="/menu" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-bars"></i> Menu </button>
+        </Link>
+        <Link to="/scanner" style={{ textDecoration: 'none' }}>
+          <button><i className="fa-solid fa-barcode"></i><span>Scanner</span></button>
         </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-briefcase"></i> Business </button>
