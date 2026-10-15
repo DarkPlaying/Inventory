@@ -427,13 +427,13 @@ export default function Search() {
           <button><i className="fa-solid fa-chart-column"></i><span>Overview</span></button>
         </Link>
         <Link to="/menu" style={{ textDecoration: 'none' }}>
-          <button><i className="fa-solid fa-bars"></i> Menu </button>
+          <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
         </Link>
-        <Link to="/scanner" style={{ textDecoration: 'none' }}>
-          <button><i className="fa-solid fa-barcode"></i><span>Scanner</span></button>
+        <Link to="/billing" style={{ textDecoration: 'none' }}>
+          <button><i className="fa-solid fa-receipt"></i><span>Billing</span></button>
         </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
-          <button><i className="fa-solid fa-briefcase"></i> Business </button>
+          <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>
         </Link>
         <Link to="/profile" style={{ textDecoration: 'none' }}>
           <button onClick={() => navigate('/profile')}><i className="fa-solid fa-address-card"></i><span>Profile</span></button>

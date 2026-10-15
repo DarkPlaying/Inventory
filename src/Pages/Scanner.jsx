@@ -1,98 +1,74 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import '../Css/scanner.css';
-import useScannerLogic from '../js/scannerLogic';
+import '../Css/billing.css';
+import useBillingLogic from '../js/billingLogic';
 import StockStatusModal from '../Components/StockStatusModal';
 
 export default function Scanner() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-  const [filterLinkQuery, setFilterLinkQuery] = useState('');
+  const [showStatusModal, setShowStatusModal] = useState(false);
 
   const {
     items,
     loadingItems,
-    activeItem,
-    setActiveItem,
-    scanMode,
-    setScanMode,
+    cart,
+    addToCart,
+    updateCartCount,
+    cartItemsList,
+    totalItemsCount,
+    grandTotal,
+    searchQuery,
+    setSearchQuery,
+    selectedCategory,
+    setSelectedCategory,
+    categories,
+    filteredProducts,
+    isScannerOpen,
+    setIsScannerOpen,
     isScanning,
     cameraError,
-    manualCode,
-    setManualCode,
-    unrecognizedBarcode,
-    setUnrecognizedBarcode,
-    showStatusModal,
-    setShowStatusModal,
-    recentScans,
-    editQty,
-    setEditQty,
-    isUpdatingDb,
-    scanFeedbackMsg,
-    availableCameras,
-    torchOn,
-    torchSupported,
     startCamera,
     stopCamera,
     toggleTorch,
+    torchOn,
+    torchSupported,
     switchCamera,
+    availableCameras,
     handleFileUploadScan,
-    handleBarcodeDecoded,
-    linkBarcodeToItem,
-    updateInventoryInDb
-  } = useScannerLogic();
+    showPaymentModal,
+    setShowPaymentModal,
+    paymentMethod,
+    setPaymentMethod,
+    isProcessingPayment,
+    handleConfirmPaymentAndPlaceOrder,
+    paymentSuccessData,
+    setPaymentSuccessData,
+    toastMsg
+  } = useBillingLogic();
 
-  // Automatically start camera on mount
+  // Manage camera when scanner mode is toggled
   useEffect(() => {
-    startCamera();
-    return () => {
+    if (isScannerOpen) {
+      startCamera();
+    } else {
       stopCamera();
-    };
-  }, []);
-
-  // Handle manual input submit
-  const handleManualSubmit = (e) => {
-    e?.preventDefault();
-    if (!manualCode.trim()) return;
-    handleBarcodeDecoded(manualCode.trim());
-    setManualCode('');
-  };
-
-  // Handle manual stepper delta
-  const handleDelta = (delta) => {
-    setEditQty(prev => Math.max(0, (Number(prev) || 0) + delta));
-  };
-
-  // Save modified count directly to Supabase
-  const handleSaveCount = async () => {
-    if (!activeItem) return;
-    await updateInventoryInDb(activeItem, editQty);
-  };
-
-  // Filter items for unrecognized barcode linking modal
-  const filteredLinkItems = items.filter(i => {
-    if (!filterLinkQuery.trim()) return true;
-    const q = filterLinkQuery.toLowerCase();
-    return (
-      i.name?.toLowerCase().includes(q) ||
-      i.category?.toLowerCase().includes(q) ||
-      String(i.id).includes(q)
-    );
-  });
+    }
+  }, [isScannerOpen]);
 
   return (
-    <div className="scanner-page">
+    <div className="billing-page">
       {/* Top Header */}
-      <header className="scanner-header">
-        <button className="scanner-back-btn" onClick={() => navigate(-1)}>
+      <header className="billing-header">
+        <button className="billing-back-btn" onClick={() => navigate(-1)}>
           <i className="fa-solid fa-arrow-left-long"></i> Back
         </button>
 
-        <span className="scanner-title">
-          <i className="fa-solid fa-barcode"></i> Product Scanner
+        <span className="billing-title">
+          <i className="fa-solid fa-receipt"></i> Billing & POS
         </span>
 
-        <div className="scanner-header-icons">
+        <div className="billing-header-icons">
           <i
             className="fa-regular fa-bell"
             style={{ cursor: 'pointer' }}
@@ -105,425 +81,419 @@ export default function Scanner() {
         </div>
       </header>
 
-      {/* Real-time Feedback Banner */}
-      {scanFeedbackMsg && (
-        <div className={`scanner-feedback-banner ${scanFeedbackMsg.type}`}>
-          <i className={`fa-solid ${
-            scanFeedbackMsg.type === 'success' ? 'fa-circle-check' :
-            scanFeedbackMsg.type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-info'
-          }`}></i>
-          <span>{scanFeedbackMsg.text}</span>
+      {/* Real-time Feedback Toast */}
+      {toastMsg && (
+        <div className={`billing-toast ${toastMsg.type}`}>
+          <i className="fa-solid fa-circle-check"></i>
+          <span>{toastMsg.text}</span>
         </div>
       )}
 
-      {/* Compact Scan Mode Selector (No Clipping) */}
-      <div className="scanner-mode-bar">
+      {/* Mode Switcher: Cart / Scan Mode Toggle */}
+      <div className="billing-mode-switch-card">
+        <div className="billing-mode-left">
+          <div className="billing-mode-icon-circle">
+            <i className={`fa-solid ${isScannerOpen ? 'fa-barcode' : 'fa-cart-shopping'}`}></i>
+          </div>
+          <div className="billing-mode-titles">
+            <h4>{isScannerOpen ? 'Barcode Scan Mode' : 'Products & Cart'}</h4>
+            <p>
+              {isScannerOpen
+                ? 'Scan barcode to add +1 directly to bill'
+                : `${totalItemsCount} items selected • $${grandTotal}`}
+            </p>
+          </div>
+        </div>
+
         <button
           type="button"
-          className={`scanner-mode-btn ${scanMode === 'inspect' ? 'active' : ''}`}
-          onClick={() => setScanMode('inspect')}
+          className={`billing-scanner-toggle-btn ${isScannerOpen ? 'btn-active' : ''}`}
+          onClick={() => setIsScannerOpen(!isScannerOpen)}
         >
-          <i className="fa-solid fa-sliders"></i>
-          <span>Adjust</span>
-        </button>
-        <button
-          type="button"
-          className={`scanner-mode-btn mode-increment ${scanMode === 'increment' ? 'active' : ''}`}
-          onClick={() => setScanMode('increment')}
-        >
-          <i className="fa-solid fa-plus"></i>
-          <span>+1 Stock</span>
-        </button>
-        <button
-          type="button"
-          className={`scanner-mode-btn mode-decrement ${scanMode === 'decrement' ? 'active' : ''}`}
-          onClick={() => setScanMode('decrement')}
-        >
-          <i className="fa-solid fa-minus"></i>
-          <span>-1 Stock</span>
+          <i className={`fa-solid ${isScannerOpen ? 'fa-xmark' : 'fa-barcode'}`}></i>
+          <span>{isScannerOpen ? 'Close Scan' : 'Scan Product'}</span>
         </button>
       </div>
 
-      {/* Camera Viewfinder Card with Red Scan Lines Only */}
-      <div className="scanner-card">
-        <div className="scanner-viewport-wrapper">
-          <div id="scanner-viewfinder"></div>
+      {/* Barcode Scanner Viewport (When Scanner Mode is ON) */}
+      {isScannerOpen && (
+        <div className="billing-scanner-section">
+          <div className="billing-viewport-wrapper">
+            <div id="billing-scanner-viewfinder"></div>
 
-          {/* Continuous Red Scan Laser & Frame (No Sample Image) */}
-          <div className="scanner-laser-box">
-            <div className="scanner-laser-line"></div>
-            <span className="scanner-target-hint">
-              {isScanning ? 'Align barcode inside frame' : 'Tap Start to activate camera'}
-            </span>
+            {/* Continuous Red Scanning Laser Line Only (No Sample Image) */}
+            <div className="billing-laser-box">
+              <div className="billing-laser-line"></div>
+              <span className="billing-target-hint">
+                {isScanning ? 'Align barcode inside red laser frame' : 'Activating camera scanner...'}
+              </span>
+            </div>
           </div>
 
-          {!isScanning && (
-            <div className="scanner-inactive-overlay">
-              {cameraError ? (
-                <div className="scanner-perm-badge">
-                  <i className="fa-solid fa-circle-exclamation"></i>
-                  <span>Camera permission required</span>
-                </div>
-              ) : null}
+          {/* Scanner Controls Toolbar */}
+          <div className="billing-scanner-toolbar">
+            <button
+              type="button"
+              className="billing-ctrl-btn"
+              onClick={() => fileInputRef.current?.click()}
+              title="Scan from Photo or Gallery (Images Only)"
+            >
+              <i className="fa-solid fa-image"></i>
+              <span>Photo / File</span>
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/png,image/jpeg,image/jpg,image/webp,image/*"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  handleFileUploadScan(e.target.files[0]);
+                  e.target.value = '';
+                }
+              }}
+            />
+
+            {torchSupported && isScanning && (
               <button
                 type="button"
-                className="scanner-start-cam-btn"
-                onClick={() => startCamera()}
+                className={`billing-ctrl-btn ${torchOn ? 'active' : ''}`}
+                onClick={toggleTorch}
               >
-                <i className="fa-solid fa-play"></i>
-                <span>Start Camera</span>
+                <i className="fa-solid fa-bolt"></i>
+                <span>{torchOn ? 'Flash Off' : 'Flash'}</span>
               </button>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Camera Control Toolbar */}
-        <div className="scanner-controls-toolbar">
+            {availableCameras.length > 1 && isScanning && (
+              <button
+                type="button"
+                className="billing-ctrl-btn"
+                onClick={switchCamera}
+              >
+                <i className="fa-solid fa-camera-rotate"></i>
+                <span>Flip</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Search Bar */}
+      <div className="billing-search-box">
+        <i className="fa-solid fa-magnifying-glass" style={{ color: '#64748b' }}></i>
+        <input
+          type="text"
+          placeholder="Search products by name, category or ID..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        {searchQuery && (
+          <button
+            style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '18px', cursor: 'pointer' }}
+            onClick={() => setSearchQuery('')}
+          >
+            ×
+          </button>
+        )}
+      </div>
+
+      {/* Category Pills Bar */}
+      <div className="billing-categories">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            className={`billing-cat-pill ${selectedCategory === cat ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Products List for Billing & Count Editing */}
+      <div className="billing-items-grid">
+        {loadingItems ? (
+          <div style={{ textAlign: 'center', padding: '30px', color: '#475569' }}>
+            <i className="fa-solid fa-circle-notch fa-spin" style={{ fontSize: '24px', color: '#2563eb' }}></i>
+            <p style={{ marginTop: '8px', fontSize: '13px' }}>Loading inventory items...</p>
+          </div>
+        ) : filteredProducts.length > 0 ? (
+          filteredProducts.map((item) => {
+            const currentQtyInCart = cart[item.id] || 0;
+            const availableStock = Number(item.quantity) || 0;
+            const isOutOfStock = availableStock <= 0;
+
+            return (
+              <div key={item.id} className="billing-item-card">
+                <div className="billing-item-info">
+                  <span className="billing-item-name">{item.name}</span>
+                  <div className="billing-item-meta">
+                    <span>{item.category || 'General'}</span>
+                    <span>•</span>
+                    <span className={`billing-stock-tag ${isOutOfStock ? 'out' : ''}`}>
+                      {isOutOfStock ? 'OUT OF STOCK' : `${availableStock} in stock`}
+                    </span>
+                  </div>
+                  <span className="billing-item-price-tag">${item.price || 0}</span>
+                </div>
+
+                <div className="billing-item-actions">
+                  {currentQtyInCart > 0 ? (
+                    <div className="billing-stepper-box">
+                      <button
+                        type="button"
+                        className="billing-step-btn"
+                        onClick={() => addToCart(item, -1)}
+                      >
+                        <i className="fa-solid fa-minus"></i>
+                      </button>
+                      <input
+                        type="number"
+                        className="billing-step-qty"
+                        value={currentQtyInCart}
+                        min="0"
+                        max={availableStock}
+                        onChange={(e) => updateCartCount(item.id, e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="billing-step-btn"
+                        onClick={() => addToCart(item, 1)}
+                        disabled={currentQtyInCart >= availableStock}
+                      >
+                        <i className="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="billing-add-btn"
+                      onClick={() => addToCart(item, 1)}
+                      disabled={isOutOfStock}
+                    >
+                      <i className="fa-solid fa-plus"></i>
+                      <span>Add</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div style={{ textAlign: 'center', padding: '30px', color: '#64748b' }}>
+            <i className="fa-solid fa-box-open" style={{ fontSize: '32px', marginBottom: '8px' }}></i>
+            <p style={{ margin: 0, fontSize: '14px', fontWeight: 600 }}>No products found</p>
+          </div>
+        )}
+      </div>
+
+      {/* Floating Checkout / Place Order Bar (Docked when items added) */}
+      {cartItemsList.length > 0 && (
+        <div className="billing-checkout-bar">
+          <div className="billing-checkout-left">
+            <span className="billing-checkout-total">${grandTotal}</span>
+            <span className="billing-checkout-count">{totalItemsCount} items in bill</span>
+          </div>
+
           <button
             type="button"
-            className="scanner-ctrl-btn"
-            onClick={() => fileInputRef.current?.click()}
-            title="Scan from Photo or Gallery (Images Only)"
+            className="billing-place-order-btn"
+            onClick={() => setShowPaymentModal(true)}
           >
-            <i className="fa-solid fa-image"></i>
-            <span>Photo / File</span>
+            <span>Place Order</span>
+            <i className="fa-solid fa-arrow-right"></i>
           </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/png,image/jpeg,image/jpg,image/webp,image/*"
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              if (e.target.files && e.target.files[0]) {
-                handleFileUploadScan(e.target.files[0]);
-                e.target.value = '';
-              }
-            }}
-          />
-
-          {torchSupported && isScanning && (
-            <button
-              type="button"
-              className={`scanner-ctrl-btn ${torchOn ? 'active' : ''}`}
-              onClick={toggleTorch}
-              title="Toggle Flashlight"
-            >
-              <i className="fa-solid fa-bolt"></i>
-              <span>{torchOn ? 'Flash Off' : 'Flash'}</span>
-            </button>
-          )}
-
-          {availableCameras.length > 1 && isScanning && (
-            <button
-              type="button"
-              className="scanner-ctrl-btn"
-              onClick={switchCamera}
-              title="Switch Camera Lens"
-            >
-              <i className="fa-solid fa-camera-rotate"></i>
-              <span>Flip</span>
-            </button>
-          )}
-
-          {isScanning ? (
-            <button
-              type="button"
-              className="scanner-ctrl-btn btn-stop"
-              onClick={stopCamera}
-              title="Pause Camera"
-            >
-              <i className="fa-solid fa-pause"></i>
-              <span>Pause</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="scanner-ctrl-btn btn-resume"
-              onClick={() => startCamera()}
-              title="Resume Camera"
-            >
-              <i className="fa-solid fa-play"></i>
-              <span>Resume</span>
-            </button>
-          )}
-        </div>
-
-        {/* Clean Manual Barcode Search Row */}
-        <div className="scanner-manual-box">
-          <form className="scanner-manual-input-row" onSubmit={handleManualSubmit}>
-            <div className="scanner-search-field-box">
-              <i className="fa-solid fa-magnifying-glass scanner-search-lead-icon"></i>
-              <input
-                type="text"
-                className="scanner-manual-input"
-                placeholder="Search name, ID or barcode..."
-                value={manualCode}
-                onChange={(e) => setManualCode(e.target.value)}
-              />
-              {manualCode && (
-                <button
-                  type="button"
-                  className="scanner-clear-input-btn"
-                  onClick={() => setManualCode('')}
-                >
-                  ×
-                </button>
-              )}
-            </div>
-            <button type="submit" className="scanner-manual-submit-btn">
-              <span>Find</span>
-            </button>
-          </form>
-
-          {/* Quick Demo Test Barcodes */}
-          {items.length > 0 && (
-            <div className="scanner-quick-test-section">
-              <span className="scanner-quick-test-label">Demo Quick Scan:</span>
-              <div className="scanner-quick-chips">
-                {items.slice(0, 4).map(item => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    className="scanner-test-chip"
-                    onClick={() => handleBarcodeDecoded(String(item.id))}
-                    title={`Test scan #${item.id} ${item.name}`}
-                  >
-                    #{item.id} {item.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Active Scanned Product & Stock Count Modifier */}
-      {activeItem && (
-        <div className="scanner-product-card">
-          <div className="scanner-product-card-top">
-            <div className="scanner-product-identity">
-              <h3>{activeItem.name}</h3>
-              <div className="scanner-product-meta">
-                <span><i className="fa-solid fa-tag"></i> {activeItem.category || 'General'}</span>
-                <span>•</span>
-                <span><i className="fa-solid fa-building"></i> {activeItem.dealer_name || 'ABC company'}</span>
-                <span>•</span>
-                <span>ID: #{activeItem.id}</span>
-              </div>
-            </div>
-
-            <span className={`scanner-status-badge ${
-              Number(activeItem.quantity) < 20 || activeItem.status === 'OUT'
-                ? 'badge-out'
-                : Number(activeItem.quantity) < 30
-                  ? 'badge-low'
-                  : 'badge-stocked'
-            }`}>
-              {Number(activeItem.quantity) < 20 || activeItem.status === 'OUT'
-                ? 'OUT OF STOCK'
-                : Number(activeItem.quantity) < 30
-                  ? 'LOW STOCK'
-                  : 'STOCKED'}
-            </span>
-          </div>
-
-          <div className="scanner-product-pricing-row">
-            <div className="scanner-price-box">
-              <span className="scanner-price-label">Unit Price</span>
-              <span className="scanner-price-val">${activeItem.price || 0}</span>
-            </div>
-            <div className="scanner-price-box">
-              <span className="scanner-price-label">Current Stock</span>
-              <span className="scanner-price-val">{activeItem.quantity} units</span>
-            </div>
-            <div className="scanner-price-box">
-              <span className="scanner-price-label">Stock Value</span>
-              <span className="scanner-price-val">
-                ${(Number(activeItem.quantity) || 0) * (Number(activeItem.price) || 0)}
-              </span>
-            </div>
-          </div>
-
-          {/* Quantity Stepper & Direct Input */}
-          <div className="scanner-qty-edit-box">
-            <div className="scanner-qty-edit-label">
-              <span>Modify Inventory Count:</span>
-              <span className="scanner-db-live-tag">
-                <span className="scanner-db-live-dot"></span> Connected to DB
-              </span>
-            </div>
-
-            <div className="scanner-stepper-row">
-              <button
-                type="button"
-                className="scanner-step-btn btn-minus"
-                onClick={() => handleDelta(-1)}
-                title="Decrease 1"
-              >
-                <i className="fa-solid fa-minus"></i>
-              </button>
-
-              <input
-                type="number"
-                className="scanner-qty-input"
-                min="0"
-                value={editQty}
-                onChange={(e) => setEditQty(Math.max(0, parseInt(e.target.value, 10) || 0))}
-              />
-
-              <button
-                type="button"
-                className="scanner-step-btn btn-plus"
-                onClick={() => handleDelta(1)}
-                title="Increase 1"
-              >
-                <i className="fa-solid fa-plus"></i>
-              </button>
-            </div>
-
-            {/* Quick Adjustment Pills */}
-            <div className="scanner-quick-deltas">
-              <button type="button" className="scanner-delta-pill pill-minus" onClick={() => handleDelta(-10)}>-10</button>
-              <button type="button" className="scanner-delta-pill pill-minus" onClick={() => handleDelta(-5)}>-5</button>
-              <button type="button" className="scanner-delta-pill pill-minus" onClick={() => handleDelta(-1)}>-1</button>
-              <button type="button" className="scanner-delta-pill pill-plus" onClick={() => handleDelta(1)}>+1</button>
-              <button type="button" className="scanner-delta-pill pill-plus" onClick={() => handleDelta(5)}>+5</button>
-              <button type="button" className="scanner-delta-pill pill-plus" onClick={() => handleDelta(10)}>+10</button>
-            </div>
-
-            <div className="scanner-card-actions">
-              <button
-                type="button"
-                className="scanner-save-db-btn"
-                onClick={handleSaveCount}
-                disabled={isUpdatingDb}
-              >
-                {isUpdatingDb ? (
-                  <>
-                    <i className="fa-solid fa-circle-notch fa-spin"></i>
-                    <span>Saving to DB...</span>
-                  </>
-                ) : (
-                  <>
-                    <i className="fa-solid fa-cloud-arrow-up"></i>
-                    <span>Update DB Count</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                type="button"
-                className="scanner-close-item-btn"
-                onClick={() => setActiveItem(null)}
-              >
-                Done
-              </button>
-            </div>
-          </div>
         </div>
       )}
 
-      {/* Recent Session Modifications */}
-      {recentScans.length > 0 && (
-        <div className="scanner-history-card">
-          <div className="scanner-history-header">
-            <span className="scanner-history-title">
-              <i className="fa-solid fa-clock-rotate-left"></i> Session History
-            </span>
-            <span style={{ fontSize: '12px', color: '#64748b' }}>{recentScans.length} scans</span>
-          </div>
-
-          <div className="scanner-history-list">
-            {recentScans.map((scan) => (
-              <div key={scan.id} className="scanner-history-item">
-                <div className="scanner-hist-left">
-                  <span className="scanner-hist-name">{scan.name}</span>
-                  <span className="scanner-hist-time">{scan.timestamp} • {scan.oldQty} ➔ {scan.newQty}</span>
-                </div>
-                <div className="scanner-hist-right">
-                  <span className={`scanner-hist-diff ${scan.deltaText?.startsWith('+') ? 'diff-plus' : 'diff-minus'}`}>
-                    {scan.deltaText}
-                  </span>
-                  <span className="scanner-hist-qty">{scan.newQty}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Unrecognized Barcode Link Modal */}
-      {unrecognizedBarcode && (
-        <div className="scanner-modal-overlay">
-          <div className="scanner-link-modal">
-            <div className="scanner-link-modal-header">
-              <div className="scanner-link-modal-title">
-                <i className="fa-solid fa-triangle-exclamation"></i>
-                <span>Link Unrecognized Barcode</span>
-              </div>
+      {/* Payment Modal with Sample QR Code */}
+      {showPaymentModal && (
+        <div className="billing-modal-overlay">
+          <div className="billing-modal-box">
+            <div className="billing-modal-header">
+              <span className="billing-modal-title">
+                <i className="fa-solid fa-qrcode" style={{ color: '#2563eb' }}></i>
+                <span>Payment & Order</span>
+              </span>
               <button
-                style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer' }}
-                onClick={() => setUnrecognizedBarcode(null)}
+                type="button"
+                className="billing-modal-close"
+                onClick={() => setShowPaymentModal(false)}
               >
                 ×
               </button>
             </div>
 
-            <p style={{ margin: '4px 0 10px 0', fontSize: '13px', color: '#475569' }}>
-              Scanned code: <span className="scanner-barcode-pill">{unrecognizedBarcode}</span>
-            </p>
-            <p style={{ margin: '0 0 12px 0', fontSize: '13px', color: '#64748b' }}>
-              Select which item from your database corresponds to this barcode. It will be remembered automatically:
-            </p>
-
-            <input
-              type="text"
-              className="scanner-manual-input"
-              placeholder="Filter products..."
-              value={filterLinkQuery}
-              onChange={(e) => setFilterLinkQuery(e.target.value)}
-              style={{ marginBottom: '10px' }}
-            />
-
-            <div className="scanner-link-items-list">
-              {filteredLinkItems.map(item => (
-                <div
-                  key={item.id}
-                  className="scanner-link-item-row"
-                  onClick={() => linkBarcodeToItem(item.id)}
-                >
-                  <div className="scanner-link-item-info">
-                    <strong>{item.name}</strong>
-                    <span>{item.category} • Current stock: {item.quantity}</span>
-                  </div>
-                  <span className="scanner-link-action-tag">Link Item</span>
-                </div>
-              ))}
-              {filteredLinkItems.length === 0 && (
-                <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '13px', padding: '16px' }}>
-                  No matching database items found.
-                </p>
-              )}
+            {/* Payment Method Selector Tabs */}
+            <div className="billing-pay-tabs">
+              <button
+                type="button"
+                className={`billing-pay-tab ${paymentMethod === 'qr' ? 'active' : ''}`}
+                onClick={() => setPaymentMethod('qr')}
+              >
+                <i className="fa-solid fa-qrcode"></i>
+                <span>Scan QR</span>
+              </button>
+              <button
+                type="button"
+                className={`billing-pay-tab ${paymentMethod === 'cash' ? 'active' : ''}`}
+                onClick={() => setPaymentMethod('cash')}
+              >
+                <i className="fa-solid fa-money-bill-wave"></i>
+                <span>Cash</span>
+              </button>
+              <button
+                type="button"
+                className={`billing-pay-tab ${paymentMethod === 'card' ? 'active' : ''}`}
+                onClick={() => setPaymentMethod('card')}
+              >
+                <i className="fa-solid fa-credit-card"></i>
+                <span>Card</span>
+              </button>
             </div>
 
+            {/* QR Code Display (Default) */}
+            {paymentMethod === 'qr' && (
+              <div className="billing-qr-container">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                    `upi://pay?pa=inventory.store@bank&pn=InventoryStore&am=${grandTotal}&cu=USD`
+                  )}`}
+                  alt="Sample Payment QR Code"
+                  className="billing-qr-img"
+                />
+                <p className="billing-qr-instruction">Scan with Any Payment App</p>
+                <p className="billing-qr-subtext">Payee: Inventory Store POS</p>
+                <div className="billing-qr-amount-pill">Total: ${grandTotal}</div>
+              </div>
+            )}
+
+            {paymentMethod === 'cash' && (
+              <div style={{ textAlign: 'center', padding: '20px', background: '#f8fafc', borderRadius: '14px', marginBottom: '14px' }}>
+                <i className="fa-solid fa-money-bill-1-wave" style={{ fontSize: '40px', color: '#10b981', marginBottom: '8px' }}></i>
+                <h4 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>Cash Payment</h4>
+                <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Collect <strong>${grandTotal}</strong> in cash from customer.</p>
+              </div>
+            )}
+
+            {paymentMethod === 'card' && (
+              <div style={{ textAlign: 'center', padding: '20px', background: '#f8fafc', borderRadius: '14px', marginBottom: '14px' }}>
+                <i className="fa-solid fa-credit-card" style={{ fontSize: '40px', color: '#2563eb', marginBottom: '8px' }}></i>
+                <h4 style={{ margin: '0 0 4px 0', fontSize: '16px' }}>POS Card Terminal</h4>
+                <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>Swipe, insert or tap customer card for <strong>${grandTotal}</strong>.</p>
+              </div>
+            )}
+
+            {/* Order Items Breakdown */}
+            <div className="billing-order-breakdown">
+              {cartItemsList.map((entry) => (
+                <div key={entry.id} className="billing-breakdown-row">
+                  <span>
+                    {entry.name} <strong>× {entry.quantity}</strong>
+                  </span>
+                  <span>${entry.total}</span>
+                </div>
+              ))}
+              <div className="billing-breakdown-row total">
+                <span>Total Amount:</span>
+                <span style={{ color: '#10b981' }}>${grandTotal}</span>
+              </div>
+            </div>
+
+            {/* Confirm Payment Button */}
             <button
-              className="scanner-close-item-btn"
-              style={{ width: '100%', marginTop: '8px' }}
-              onClick={() => setUnrecognizedBarcode(null)}
+              type="button"
+              className="billing-confirm-pay-btn"
+              onClick={handleConfirmPaymentAndPlaceOrder}
+              disabled={isProcessingPayment}
             >
-              Cancel
+              {isProcessingPayment ? (
+                <>
+                  <i className="fa-solid fa-circle-notch fa-spin"></i>
+                  <span>Processing Order & Updating DB...</span>
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-check"></i>
+                  <span>Confirm Payment (${grandTotal})</span>
+                </>
+              )}
             </button>
           </div>
         </div>
       )}
 
-      {/* Stock Status Modal */}
+      {/* Payment Success Receipt Screen */}
+      {paymentSuccessData && (
+        <div className="billing-modal-overlay">
+          <div className="billing-modal-box">
+            <div className="billing-receipt-card">
+              <div className="billing-receipt-check">
+                <i className="fa-solid fa-check"></i>
+              </div>
+
+              <h3>Order Completed! 🎉</h3>
+              <p>Payment received and inventory stock deducted in database.</p>
+
+              <div className="billing-receipt-meta">
+                <div className="billing-receipt-meta-row">
+                  <span>Receipt #:</span>
+                  <strong>{paymentSuccessData.receiptId}</strong>
+                </div>
+                <div className="billing-receipt-meta-row">
+                  <span>Date:</span>
+                  <span>{paymentSuccessData.date}</span>
+                </div>
+                <div className="billing-receipt-meta-row">
+                  <span>Method:</span>
+                  <span>{paymentSuccessData.paymentMethod}</span>
+                </div>
+                <div className="billing-receipt-meta-row">
+                  <span>Items Count:</span>
+                  <span>{paymentSuccessData.totalItems} items</span>
+                </div>
+                <div className="billing-receipt-meta-row" style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px dashed #cbd5e1', fontSize: '15px' }}>
+                  <strong>Amount Paid:</strong>
+                  <strong style={{ color: '#10b981' }}>${paymentSuccessData.grandTotal}</strong>
+                </div>
+              </div>
+
+              <div className="billing-receipt-actions">
+                <button
+                  type="button"
+                  className="billing-btn-goto-menu"
+                  onClick={() => {
+                    setPaymentSuccessData(null);
+                    navigate('/menu');
+                  }}
+                >
+                  <i className="fa-solid fa-arrow-left"></i>
+                  <span>Return to Menu</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="billing-btn-new-sale"
+                  onClick={() => setPaymentSuccessData(null)}
+                >
+                  <i className="fa-solid fa-plus"></i>
+                  <span>New Sale</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Stock Status Notification Modal */}
       <StockStatusModal
         isOpen={showStatusModal}
         onClose={() => setShowStatusModal(false)}
       />
 
-      {/* Floating Bottom Footer - Perfectly matching Menu / Business / Profile */}
+      {/* Floating Bottom Footer - Universal auto-scaled tabs */}
       <footer className="footer">
         <Link to="/" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-chart-column"></i><span>Overview</span></button>
@@ -532,7 +502,7 @@ export default function Scanner() {
           <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
         </Link>
         <Link to="/scanner" style={{ textDecoration: 'none' }}>
-          <button className="active-nav"><i className="fa-solid fa-barcode"></i><span>Scanner</span></button>
+          <button className="active-nav"><i className="fa-solid fa-receipt"></i><span>Billing</span></button>
         </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>

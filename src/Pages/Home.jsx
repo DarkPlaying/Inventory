@@ -150,9 +150,9 @@ const Home = () => {
               <i className="fa-solid fa-bars"></i>
               <span>Menu</span>
             </Link>
-            <Link to="/scanner" onClick={() => setOpen(false)}>
-              <i className="fa-solid fa-barcode"></i>
-              <span>Product Scanner</span>
+            <Link to="/billing" onClick={() => setOpen(false)}>
+              <i className="fa-solid fa-receipt"></i>
+              <span>Billing & POS</span>
             </Link>
             <Link to="/business" onClick={() => setOpen(false)}>
               <i className="fa-solid fa-briefcase"></i>
@@ -487,8 +487,8 @@ const Home = () => {
         <Link to="/menu" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-bars"></i><span>Menu</span></button>
         </Link>
-        <Link to="/scanner" style={{ textDecoration: 'none' }}>
-          <button><i className="fa-solid fa-barcode"></i><span>Scanner</span></button>
+        <Link to="/billing" style={{ textDecoration: 'none' }}>
+          <button><i className="fa-solid fa-receipt"></i><span>Billing</span></button>
         </Link>
         <Link to="/business" style={{ textDecoration: 'none' }}>
           <button><i className="fa-solid fa-briefcase"></i><span>Business</span></button>
