@@ -3,8 +3,35 @@ import supabase from "../supabase";
 import Swal from "sweetalert2";
 import { sendStockChangeNotification } from "./notificationService";
 
+const MENU_CACHE_KEY = 'inventory_items_cache';
+
+const getCachedMenuItems = () => {
+  try {
+    const raw = localStorage.getItem(MENU_CACHE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (Array.isArray(data) && data.length > 0) {
+        return data.map(x => ({
+          id: x.id,
+          name: x.name,
+          count: Number(x.quantity ?? x.count) || 0,
+          status: (Number(x.quantity ?? x.count) < 20 || x.status === 'OUT')
+            ? 'OUT'
+            : Number(x.quantity ?? x.count) < 30
+              ? 'LOW'
+              : 'STOCKED',
+          price: x.price,
+          dealer_name: x.dealer_name || 'ABC company',
+          category: x.category || 'Clothes'
+        }));
+      }
+    }
+  } catch (_) {}
+  return [];
+};
+
 export function useMenuLogic() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => getCachedMenuItems());
   const [filter, setFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -30,7 +57,7 @@ export function useMenuLogic() {
 
   async function getItems() {
     const { data, error } = await supabase.from('items').select('*');
-    if (data) {
+    if (data && data.length > 0) {
       const formatted = data.map(x => ({
         id: x.id,
         name: x.name,
@@ -45,6 +72,9 @@ export function useMenuLogic() {
         category: x.category || 'Clothes'
       }));
       setItems(formatted);
+      try {
+        localStorage.setItem(MENU_CACHE_KEY, JSON.stringify(data));
+      } catch (_) {}
     } else if (error) {
       console.error("error in fetch Menu data:", error.message);
       showToast(error.message, "error");

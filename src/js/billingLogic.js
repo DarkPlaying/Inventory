@@ -171,11 +171,19 @@ export function useBillingLogic() {
     showNotification(`"${item.name}" qty: ${newQty}`);
   };
 
-  const updateCartCount = (itemId, count) => {
+  const updateCartCount = (itemId, countInput) => {
     const item = items.find(i => i.id === itemId);
     if (!item) return;
-    const valid = Math.max(0, parseInt(count, 10) || 0);
     const maxAvailable = Number(item.quantity) || 0;
+
+    // If input is deleted / blank, set to 0 and KEEP edit stepper open!
+    if (countInput === '' || countInput === null || countInput === undefined) {
+      setCart(prev => ({ ...prev, [itemId]: 0 }));
+      return;
+    }
+
+    let valid = parseInt(countInput, 10);
+    if (isNaN(valid)) valid = 0;
 
     if (valid > maxAvailable) {
       Swal.fire({
@@ -191,11 +199,7 @@ export function useBillingLogic() {
       return;
     }
 
-    if (valid <= 0) {
-      removeFromCart(itemId);
-    } else {
-      setCart(prev => ({ ...prev, [itemId]: valid }));
-    }
+    setCart(prev => ({ ...prev, [itemId]: Math.max(0, valid) }));
   };
 
   const removeFromCart = (itemId) => {
@@ -210,19 +214,22 @@ export function useBillingLogic() {
     setCart({});
   };
 
-  // Cart Calculations
-  const cartItemsList = Object.entries(cart).map(([id, qty]) => {
-    const item = items.find(i => String(i.id) === String(id));
-    const price = Number(item?.price) || 0;
-    return {
-      id: Number(id),
-      item,
-      name: item?.name || `Item #${id}`,
-      price,
-      quantity: qty,
-      total: qty * price
-    };
-  }).filter(entry => entry.item);
+  // Cart Calculations - only entries with quantity > 0 are billed
+  const cartItemsList = Object.entries(cart)
+    .filter(([_, qty]) => Number(qty) > 0)
+    .map(([id, qty]) => {
+      const item = items.find(i => String(i.id) === String(id));
+      const price = Number(item?.price) || 0;
+      return {
+        id: Number(id),
+        item,
+        name: item?.name || `Item #${id}`,
+        price,
+        quantity: Number(qty),
+        total: Number(qty) * price
+      };
+    })
+    .filter(entry => entry.item);
 
   const totalItemsCount = cartItemsList.reduce((acc, c) => acc + c.quantity, 0);
   const grandTotal = cartItemsList.reduce((acc, c) => acc + c.total, 0);
@@ -287,6 +294,31 @@ export function useBillingLogic() {
   const startCamera = async (preferCameraId = null) => {
     try {
       setCameraError(null);
+
+      // Wait for DOM element to exist in the document
+      let el = document.getElementById('billing-scanner-viewfinder');
+      let attempts = 0;
+      while (!el && attempts < 15) {
+        await new Promise(r => setTimeout(r, 100));
+        el = document.getElementById('billing-scanner-viewfinder');
+        attempts++;
+      }
+      if (!el) {
+        throw new Error('Scanner container not ready yet.');
+      }
+
+      // Check and prompt for camera permission via getUserMedia
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          const testStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: preferCameraId ? undefined : 'environment' }
+          });
+          testStream.getTracks().forEach(t => t.stop());
+        } catch (permErr) {
+          console.warn('Camera permission check result:', permErr);
+        }
+      }
+
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode('billing-scanner-viewfinder', { verbose: false });
       }
@@ -310,7 +342,7 @@ export function useBillingLogic() {
           () => {}
         );
       } catch (err) {
-        // Fallback to user facing camera
+        console.warn('Environment camera failed, falling back to user facing camera:', err);
         await scanner.start(
           { facingMode: 'user' },
           { fps: 15, qrbox: qrboxFunction, aspectRatio: 1.0 },
@@ -320,6 +352,7 @@ export function useBillingLogic() {
       }
 
       setIsScanning(true);
+      setCameraError(null);
 
       Html5Qrcode.getCameras().then(devices => {
         if (devices && devices.length > 0) setAvailableCameras(devices);
@@ -426,30 +459,48 @@ export function useBillingLogic() {
     setIsProcessingPayment(true);
 
     try {
-      // Deduct inventory count for all cart items in Supabase
-      const updatePromises = cartItemsList.map(async (entry) => {
+      // Deduct inventory count for all cart items in Supabase (only update quantity; total_price is a generated column)
+      for (const entry of cartItemsList) {
         const item = entry.item;
         const currentQty = Number(item.quantity) || 0;
         const deductQty = entry.quantity;
         const newQty = Math.max(0, currentQty - deductQty);
-        const unitPrice = Number(item.price) || 0;
-        const newTotalPrice = newQty * unitPrice;
-        const newStatus = newQty < 20 ? 'OUT' : newQty < 30 ? 'LOW' : 'STOCKED';
 
-        return supabase
+        const { error } = await supabase
           .from('items')
           .update({
-            quantity: newQty,
-            total_price: newTotalPrice
+            quantity: newQty
           })
           .eq('id', item.id);
-      });
 
-      const results = await Promise.all(updatePromises);
-      const hasError = results.some(r => r.error);
-      if (hasError) {
-        console.warn('Some items failed to update in Supabase');
+        if (error) {
+          console.error(`Error updating item #${item.id}:`, error);
+          throw error;
+        }
       }
+
+      // Update local state and persistent caches immediately
+      setItems(prevItems => {
+        const updated = prevItems.map(it => {
+          const purchased = cartItemsList.find(c => String(c.id) === String(it.id));
+          if (purchased) {
+            const newQty = Math.max(0, (Number(it.quantity) || 0) - purchased.quantity);
+            const newStatus = newQty < 20 ? 'OUT' : newQty < 30 ? 'LOW' : 'STOCKED';
+            return { ...it, quantity: newQty, status: newStatus };
+          }
+          return it;
+        });
+        try {
+          localStorage.setItem(BILLING_ITEMS_CACHE_KEY, JSON.stringify(updated));
+          const existingOverview = localStorage.getItem('inventory_overview_cache');
+          if (existingOverview) {
+            const parsed = JSON.parse(existingOverview);
+            parsed.items = updated;
+            localStorage.setItem('inventory_overview_cache', JSON.stringify(parsed));
+          }
+        } catch (_) {}
+        return updated;
+      });
 
       const receiptId = `ORD-${Date.now().toString().slice(-6)}`;
       const completedOrderData = {
@@ -473,6 +524,9 @@ export function useBillingLogic() {
 
       playBeep('success');
       triggerHaptic([50, 50, 100]);
+
+      // Re-fetch fresh items in background
+      fetchItems();
     } catch (err) {
       console.error('Order placement error:', err);
       Swal.fire({

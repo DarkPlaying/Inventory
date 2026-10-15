@@ -15,6 +15,7 @@ export default function Scanner() {
     cart,
     addToCart,
     updateCartCount,
+    removeFromCart,
     cartItemsList,
     totalItemsCount,
     grandTotal,
@@ -124,9 +125,36 @@ export default function Scanner() {
             {/* Continuous Red Scanning Laser Line Only (No Sample Image) */}
             <div className="billing-laser-box">
               <div className="billing-laser-line"></div>
-              <span className="billing-target-hint">
-                {isScanning ? 'Align barcode inside red laser frame' : 'Activating camera scanner...'}
-              </span>
+              {cameraError ? (
+                <div style={{ textAlign: 'center', padding: '10px' }}>
+                  <span className="billing-target-hint" style={{ color: '#fca5a5', background: 'rgba(239, 68, 68, 0.45)' }}>
+                    <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '6px' }}></i>
+                    {cameraError}
+                  </span>
+                  <div style={{ marginTop: '8px' }}>
+                    <button
+                      type="button"
+                      onClick={() => startCamera()}
+                      style={{
+                        padding: '6px 14px',
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: '#2563eb',
+                        color: '#fff',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <i className="fa-solid fa-rotate-right" style={{ marginRight: '5px' }}></i> Retry Camera
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <span className="billing-target-hint">
+                  {isScanning ? 'Align barcode inside red laser frame' : 'Activating camera scanner...'}
+                </span>
+              )}
             </div>
           </div>
 
@@ -240,28 +268,38 @@ export default function Scanner() {
                 </div>
 
                 <div className="billing-item-actions">
-                  {currentQtyInCart > 0 ? (
+                  {cart[item.id] !== undefined ? (
                     <div className="billing-stepper-box">
                       <button
                         type="button"
                         className="billing-step-btn"
-                        onClick={() => addToCart(item, -1)}
+                        onClick={() => {
+                          if ((cart[item.id] || 0) <= 1) {
+                            removeFromCart(item.id);
+                          } else {
+                            addToCart(item, -1);
+                          }
+                        }}
+                        title={cart[item.id] <= 1 ? "Remove from bill" : "Decrease count"}
                       >
                         <i className="fa-solid fa-minus"></i>
                       </button>
                       <input
                         type="number"
                         className="billing-step-qty"
-                        value={currentQtyInCart}
+                        value={cart[item.id] === 0 ? '' : cart[item.id]}
+                        placeholder="0"
                         min="0"
                         max={availableStock}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => updateCartCount(item.id, e.target.value)}
                       />
                       <button
                         type="button"
                         className="billing-step-btn"
                         onClick={() => addToCart(item, 1)}
-                        disabled={currentQtyInCart >= availableStock}
+                        disabled={(cart[item.id] || 0) >= availableStock}
+                        title="Increase count"
                       >
                         <i className="fa-solid fa-plus"></i>
                       </button>
