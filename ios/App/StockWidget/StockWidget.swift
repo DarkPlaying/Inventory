@@ -538,26 +538,21 @@ extension Color {
 }
 
 @main
+struct StockWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        StockWidget()
+    }
+}
+
 struct StockWidget: Widget {
     let kind: String = "StockWidget"
 
-    @WidgetConfigurationBuilder
     var body: some WidgetConfiguration {
-        if #available(iOSApplicationExtension 17.0, *) {
-            StaticConfiguration(kind: kind, provider: Provider()) { entry in
-                StockWidgetEntryView(entry: entry)
-            }
-            .configurationDisplayName("Stock & Task Reminder")
-            .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
-            .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])
-            .contentMarginsDisabled()
-        } else {
-            StaticConfiguration(kind: kind, provider: Provider()) { entry in
-                StockWidgetEntryView(entry: entry)
-            }
-            .configurationDisplayName("Stock & Task Reminder")
-            .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
-            .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+            StockWidgetEntryView(entry: entry)
         }
+        .configurationDisplayName("Stock & Task Reminder")
+        .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
+        .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])
     }
 }

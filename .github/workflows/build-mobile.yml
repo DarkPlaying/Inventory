@@ -45,7 +45,8 @@ jobs:
           cd derived_data/Build/Products/Debug-iphonesimulator
           echo "Verifying Widget extension in App.app:"
           ls -la App.app/PlugIns/StockWidgetExtension.appex/ || true
-          plutil -p App.app/PlugIns/StockWidgetExtension.appex/Info.plist | grep -E "CFBundleDisplayName|CFBundlePackageType|NSExtensionPointIdentifier" || true
+          echo "=== StockWidgetExtension Info.plist (JSON Export) ==="
+          plutil -convert json -o - App.app/PlugIns/StockWidgetExtension.appex/Info.plist || true
           # Ad-hoc sign both extension and app container so iOS Simulator / Appetize registers WidgetKit
           codesign --force --deep --sign - App.app/PlugIns/StockWidgetExtension.appex || true
           codesign --force --deep --sign - App.app
@@ -76,9 +77,8 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r ios/App/build/App.xcarchive/Products/Applications/App.app Payload/
-          echo "Verifying Widget extension in Device IPA:"
-          ls -la Payload/App.app/PlugIns/StockWidgetExtension.appex/ || true
-          plutil -p Payload/App.app/PlugIns/StockWidgetExtension.appex/Info.plist | grep -E "CFBundleDisplayName|CFBundlePackageType|NSExtensionPointIdentifier" || true
+          echo "=== Device IPA StockWidgetExtension Info.plist (JSON Export) ==="
+          plutil -convert json -o - Payload/App.app/PlugIns/StockWidgetExtension.appex/Info.plist || true
           zip -r "$GITHUB_WORKSPACE/App-unsigned.ipa" Payload
 
       - name: Upload iOS IPA Artifact (for physical devices)
