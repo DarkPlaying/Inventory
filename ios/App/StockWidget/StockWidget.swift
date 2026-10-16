@@ -194,7 +194,7 @@ struct StockWidgetEntryView: View {
     }
 
     var body: some View {
-        if #available(iOSApplicationExtension 17.0, *) {
+        if #available(iOS 17.0, *) {
             widgetContent
                 .containerBackground(for: .widget) {
                     backgroundGradient
@@ -551,8 +551,8 @@ struct StockWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             StockWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("Stock & Task Reminder")
-        .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
+        .configurationDisplayName("InventoryApp - Stock & Tasks")
+        .description("InventoryApp live stock reminder: track total items, low stock alerts, out of stock, and daily tasks.")
         .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])
     }
 }

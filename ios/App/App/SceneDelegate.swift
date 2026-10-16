@@ -1,11 +1,18 @@
 import UIKit
 import Capacitor
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 class MainViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         super.capacitorDidLoad()
         bridge?.registerPluginInstance(StockWidgetPlugin())
         bridge?.registerPluginInstance(BiometricPlugin())
+
+        if #available(iOS 14.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 }
 
