@@ -47,9 +47,9 @@ jobs:
           ls -la App.app/PlugIns/StockWidgetExtension.appex/ || true
           echo "=== StockWidgetExtension Info.plist (JSON Export) ==="
           plutil -convert json -o - App.app/PlugIns/StockWidgetExtension.appex/Info.plist || true
-          # Ad-hoc sign both extension and app container so iOS Simulator / Appetize registers WidgetKit
-          codesign --force --deep --sign - App.app/PlugIns/StockWidgetExtension.appex || true
-          codesign --force --deep --sign - App.app
+          # Ad-hoc sign both extension and app container with entitlements so iOS Simulator / Appetize registers WidgetKit
+          codesign --force --sign - --entitlements "$GITHUB_WORKSPACE/ios/App/StockWidget/StockWidgetExtension.entitlements" App.app/PlugIns/StockWidgetExtension.appex || true
+          codesign --force --sign - --entitlements "$GITHUB_WORKSPACE/ios/App/App/App.entitlements" App.app || true
           zip -r "$GITHUB_WORKSPACE/App-Simulator-appetize.zip" App.app
 
       - name: Upload iOS Simulator Artifact (for Appetize.io)
