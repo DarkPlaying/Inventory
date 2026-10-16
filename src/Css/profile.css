@@ -21,7 +21,7 @@ body {
   justify-content: space-between;
 }
 
-.prfile-page main {
+.profile-page main {
   flex: 1;
   display: flex;
   position: relative;

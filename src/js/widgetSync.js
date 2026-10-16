@@ -85,8 +85,8 @@ export async function syncStockAndTasksToWidget({
     } catch (_) {}
   }
 
-  // Native Android Widget Sync
-  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android') {
+  // Native Android & iOS Widget Sync
+  if (Capacitor.isNativePlatform()) {
     try {
       await StockWidgetNative.updateWidgetData(snapshot);
     } catch (e) {
