@@ -8,7 +8,8 @@ public class StockWidgetPlugin: CAPPlugin, CAPBridgedPlugin {
     public let jsName = "StockWidgetPlugin"
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "updateWidgetData", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "setWidgetTheme", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "setWidgetTheme", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "requestPinWidget", returnType: CAPPluginReturnPromise)
     ]
 
     @objc func updateWidgetData(_ call: CAPPluginCall) {
@@ -52,5 +53,23 @@ public class StockWidgetPlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
         call.resolve(["status": "success", "theme": theme])
+    }
+
+    @objc func requestPinWidget(_ call: CAPPluginCall) {
+        let size = call.getString("size") ?? "large"
+        let defaults = UserDefaults(suiteName: "group.com.inventoryapp.app") ?? UserDefaults.standard
+        defaults.set(size, forKey: "preferred_widget_size")
+        defaults.synchronize()
+
+        if #available(iOS 14.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+
+        call.resolve([
+            "supported": false,
+            "platform": "ios",
+            "size": size,
+            "message": "iOS uses Home Screen edit mode (+ button) to place widgets."
+        ])
     }
 }

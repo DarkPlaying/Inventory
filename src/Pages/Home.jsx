@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useHomeLogic } from '../js/homejs'
 import StockStatusModal from '../Components/StockStatusModal'
 import StockTasksModal from '../Components/StockTasksModal'
+import AddWidgetModal from '../Components/AddWidgetModal'
 import { getStoredTasks, getTodayDateString, getTomorrowDateString, fetchTasksFromDB } from '../js/taskLogic'
 import { PieChart, LineChart, RadarChart } from '../Components/Graphs'
 
@@ -27,6 +28,7 @@ const Home = () => {
 
   // Stock Aiming & Tasks State
   const [showTasksModal, setShowTasksModal] = React.useState(false)
+  const [showAddWidgetModal, setShowAddWidgetModal] = React.useState(false)
   const [tasksList, setTasksList] = React.useState(() => getStoredTasks())
 
   React.useEffect(() => {
@@ -292,10 +294,28 @@ const Home = () => {
               </p>
             </div>
           </div>
-          <button type="button" className="task-aim-banner-action">
-            <span>Tasks</span>
-            <i className="fa-solid fa-arrow-right"></i>
-          </button>
+          <div className="task-aim-banner-actions" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className="task-aim-banner-widget-btn"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowAddWidgetModal(true)
+              }}
+              title="Add Stock Widget to Home Screen"
+            >
+              <i className="fa-solid fa-layer-group"></i>
+              <span>Widget</span>
+            </button>
+            <button
+              type="button"
+              className="task-aim-banner-action"
+              onClick={() => setShowTasksModal(true)}
+            >
+              <span>Tasks</span>
+              <i className="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
         </div>
         {/* 2x2 Metric Cards Grid */}
         <div className="metrics-grid">
@@ -586,6 +606,19 @@ const Home = () => {
         items={items}
         totaliteam={totaliteam}
         lowStock={outstock}
+      />
+
+      {/* Add Widget to Home Screen Modal */}
+      <AddWidgetModal
+        isOpen={showAddWidgetModal}
+        onClose={() => setShowAddWidgetModal(false)}
+        items={items}
+        totaliteam={totaliteam}
+        lowStock={outstock}
+        outStock={outstock}
+        tasksCount={todayTasks.length + tomorrowTasks.length}
+        nominalRevenue={Number(totalf || 0)}
+        nominalBalance={Number(totalf || 0)}
       />
 
       {/* Footer Navigation */}

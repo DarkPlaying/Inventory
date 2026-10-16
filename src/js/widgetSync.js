@@ -145,3 +145,35 @@ export async function syncStockAndTasksToWidget({
 
   return snapshot;
 }
+
+export const PREFERRED_WIDGET_SIZE_KEY = 'inventory_preferred_widget_size';
+
+export function getPreferredWidgetSize() {
+  try {
+    return localStorage.getItem(PREFERRED_WIDGET_SIZE_KEY) || 'large';
+  } catch (_) {
+    return 'large';
+  }
+}
+
+export function setPreferredWidgetSize(size) {
+  try {
+    localStorage.setItem(PREFERRED_WIDGET_SIZE_KEY, size);
+  } catch (_) {}
+}
+
+/**
+ * Request to pin widget on home screen with chosen size (small, medium, large)
+ */
+export async function requestPinStockWidget(size = 'large') {
+  setPreferredWidgetSize(size);
+  if (Capacitor.isNativePlatform()) {
+    try {
+      return await StockWidgetNative.requestPinWidget({ size });
+    } catch (err) {
+      console.warn('requestPinWidget error:', err);
+      return { supported: false, error: err?.message };
+    }
+  }
+  return { supported: false, web: true, size };
+}
