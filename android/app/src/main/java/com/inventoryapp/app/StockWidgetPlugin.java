@@ -26,6 +26,15 @@ public class StockWidgetPlugin extends Plugin {
             if (call.hasOption("outOfStockCount")) {
                 editor.putInt("out_of_stock_count", call.getInt("outOfStockCount", 0));
             }
+            if (call.hasOption("tasksCount")) {
+                editor.putInt("tasks_count", call.getInt("tasksCount", 0));
+            }
+            if (call.hasOption("nominalBalance")) {
+                editor.putInt("nominal_balance", call.getInt("nominalBalance", 0));
+            }
+            if (call.hasOption("nominalRevenue")) {
+                editor.putInt("nominal_revenue", call.getInt("nominalRevenue", 0));
+            }
             if (call.hasOption("todayTasksText")) {
                 editor.putString("today_tasks_text", call.getString("todayTasksText", "No pending tasks today."));
             }

@@ -16,10 +16,10 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9582B6822FE993A50072D4E8 /* SceneDelegate.swift */; };
-		0B1B455D7B7047DAA82EA14F /* StockWidgetExtension.appex in Copy Files */ = {isa = PBXBuildFile; fileRef = F9A8A028305F408AB114BD01 /* StockWidgetExtension.appex */; };
+		0B1B455D7B7047DAA82EA14F /* StockWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F9A8A028305F408AB114BD01 /* StockWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1AD91F4C2AC049E296CAB7D2 /* StockWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2490D25B8A4140875BA0FF /* StockWidget.swift */; };
 		BCA1DB36401141B28723C93F /* StockWidgetPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD977952F20044D488986AEE /* StockWidgetPlugin.swift */; };
-		DB30EABDD3D548D79E98AC32 /* StockWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F9A8A028305F408AB114BD01 /* StockWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1B2C3D4E5F6789012345678 /* BiometricPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6789012345679 /* BiometricPlugin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +38,7 @@
 		FD2490D25B8A4140875BA0FF /* StockWidget.swift */ = {isa = PBXFileReference; name = "StockWidget.swift"; path = "StockWidget/StockWidget.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
 		4B5D414659D347DC9F416316 /* Info.plist */ = {isa = PBXFileReference; name = "Info.plist"; path = "StockWidget/Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
 		DD977952F20044D488986AEE /* StockWidgetPlugin.swift */ = {isa = PBXFileReference; name = "StockWidgetPlugin.swift"; path = "StockWidgetPlugin.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		B1C2D3E4F5A6789012345679 /* BiometricPlugin.swift */ = {isa = PBXFileReference; name = "BiometricPlugin.swift"; path = "BiometricPlugin.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +92,7 @@
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
 				DD977952F20044D488986AEE /* StockWidgetPlugin.swift */,
+				B1C2D3E4F5A6789012345679 /* BiometricPlugin.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -114,8 +116,7 @@
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
-				D2158958D39A4585A57D7823 /* Copy Files */,
-				0256BEBCCCD74B88A78E8F7B /* Embed App Extensions */,
+				D2158958D39A4585A57D7823 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
@@ -216,6 +217,7 @@
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */,
 				BCA1DB36401141B28723C93F /* StockWidgetPlugin.swift in Sources */,
+				A1B2C3D4E5F6789012345678 /* BiometricPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,27 +507,16 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D2158958D39A4585A57D7823 /* Copy Files */ = {
+		D2158958D39A4585A57D7823 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B1B455D7B7047DAA82EA14F /* StockWidgetExtension.appex in Copy Files */,
+				0B1B455D7B7047DAA82EA14F /* StockWidgetExtension.appex in Embed App Extensions */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			name = "Copy Files";
-			dstPath = "";
-			dstSubfolderSpec = 13;
-		};
-		0256BEBCCCD74B88A78E8F7B /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				DB30EABDD3D548D79E98AC32 /* StockWidgetExtension.appex in Embed App Extensions */,
-			);
 			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
+			dstPath = "";
+			dstSubfolderSpec = 13;
 		};
 /* End PBXCopyFilesBuildPhase section */
 

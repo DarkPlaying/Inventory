@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Css/profile.css';
 import StockStatusModal from '../Components/StockStatusModal';
+import SettingsModal from '../Components/SettingsModal';
 import supabase from '../supabase';
 import couldImg from '../assets/could.png';
 import avaterImg from '../assets/avater.png';
@@ -9,6 +10,7 @@ import avaterImg from '../assets/avater.png';
 export default function Profile() {
   const navigate = useNavigate();
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [companies, setCompanies] = useState([]);
 
   useEffect(() => {
@@ -50,6 +52,12 @@ export default function Profile() {
         <span className="menu-title">Profile</span>
         <div className="menu-icons">
           <i
+            className="fa-solid fa-gear"
+            style={{ cursor: 'pointer' }}
+            title="Settings"
+            onClick={() => setShowSettingsModal(true)}
+          ></i>
+          <i
             className="fa-regular fa-bell"
             style={{ cursor: 'pointer' }}
             onClick={() => setShowStatusModal(true)}
@@ -57,19 +65,38 @@ export default function Profile() {
           <i className="fa-solid fa-circle-user"></i>
         </div>
       </header>
-      <main>
-        <div className="container">
-          <img className='could' src={couldImg} alt="Clouds Cover" />
-          <Link to="/" style={{ textDecoration: 'none' }}>
-          <button className='follow'> Inventory App <i className="fa-solid fa-plus"></i> </button></Link>
-          <img className='avater' src={avaterImg} alt="Avatar" />
-          <p className='started'>Started At 2026</p>
-          <h1 className='name'>Sanjay</h1>
-          <p className='info'>Manage and monitor your inventory efficiently in one place. Track stock levels, manage product details, monitor incoming and outgoing items, and stay updated on stock availability.</p>
-          <div className="detail">
-            <span className="companies-highlight"><strong>Companies: </strong>{companyText}</span>
+      <main className="profile-main">
+        <div className="profile-card">
+          <div className="profile-banner-wrap">
+            <img className="could" src={couldImg} alt="Clouds Cover" />
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <button className="follow">Inventory App <i className="fa-solid fa-plus"></i></button>
+            </Link>
           </div>
-           
+
+          <div className="profile-avatar-row">
+            <img className="avater" src={avaterImg} alt="Avatar" />
+            <span className="started-badge">Started At 2026</span>
+          </div>
+
+          <div className="profile-body">
+            <h1 className="name">Sanjay</h1>
+            <p className="info">
+              Manage and monitor your inventory efficiently in one place. Track stock levels, manage product details, monitor incoming and outgoing items, and stay updated on stock availability.
+            </p>
+
+            <div className="detail">
+              <span className="companies-highlight"><strong>Companies: </strong>{companyText}</span>
+            </div>
+
+            <button
+              type="button"
+              className="profile-settings-btn"
+              onClick={() => setShowSettingsModal(true)}
+            >
+              <i className="fa-solid fa-gear"></i> App Settings &amp; Preferences
+            </button>
+          </div>
         </div>
       </main>
 
@@ -91,11 +118,14 @@ export default function Profile() {
         </Link>
       </footer>
 
-      
-
       <StockStatusModal
         isOpen={showStatusModal}
         onClose={() => setShowStatusModal(false)}
+      />
+
+      <SettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
       />
     </div>
   );

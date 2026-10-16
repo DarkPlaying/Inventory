@@ -7,24 +7,32 @@
     android:background="@drawable/widget_bg_light"
     android:padding="12dp">
 
-    <!-- Header Row -->
+    <!-- Top Header: Product Activity + Theme Switcher + Live Badge -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="6dp">
+
+        <ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:src="@drawable/app_logo"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@null" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="📦 Stock &amp; Aiming Reminder"
+            android:text="Product Activity"
             android:textColor="#0f172a"
             android:textStyle="bold"
-            android:textSize="12.5sp" />
+            android:textSize="14sp" />
 
-        <!-- Quick One-Tap Theme Switcher -->
+        <!-- Theme Toggle -->
         <TextView
             android:id="@+id/widget_theme_toggle"
             android:layout_width="wrap_content"
@@ -36,21 +44,93 @@
             android:textSize="9.5sp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
             android:layout_marginEnd="6dp" />
 
         <TextView
             android:id="@+id/widget_sync_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Live Sync"
-            android:textColor="#2563eb"
+            android:text="Live"
+            android:textColor="#0284c7"
             android:textStyle="bold"
             android:textSize="9.5sp" />
     </LinearLayout>
 
-    <!-- Metrics Row -->
+    <!-- Interactive Period Filter Pills (1W, 1M, 3W, YTD, Total) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/widget_pill_bar_bg"
+        android:padding="2.5dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/widget_tab_1w"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1W"
+            android:textColor="#0f172a"
+            android:textSize="9.5sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" />
+
+        <TextView
+            android:id="@+id/widget_tab_1m"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1M"
+            android:textColor="#64748b"
+            android:textSize="9.5sp"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" />
+
+        <TextView
+            android:id="@+id/widget_tab_3w"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="3W"
+            android:textColor="#64748b"
+            android:textSize="9.5sp"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" />
+
+        <TextView
+            android:id="@+id/widget_tab_ytd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="YTD"
+            android:textColor="#64748b"
+            android:textSize="9.5sp"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" />
+
+        <TextView
+            android:id="@+id/widget_tab_total"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Total"
+            android:textColor="#64748b"
+            android:textSize="9.5sp"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp" />
+    </LinearLayout>
+
+    <!-- Main Section: Donut Ring Chart on Left + 4 Interactive Breakdown Rows on Right -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,113 +138,198 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="8dp">
 
-        <!-- Total Items Badge -->
-        <TextView
-            android:id="@+id/widget_total_items"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/widget_inner_box_light"
-            android:text="Items: 0"
-            android:textColor="#1d4ed8"
-            android:textSize="10.5sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp" />
+        <!-- Donut Ring Chart ImageView (Programmatically Rendered) -->
+        <ImageView
+            android:id="@+id/widget_gauge_img"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Activity Donut Gauge" />
 
-        <!-- Low Stock Badge -->
-        <TextView
-            android:id="@+id/widget_low_stock"
+        <!-- 4 Interactive Metric Rows with Colored Bullets -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:background="@drawable/widget_inner_box_light"
-            android:text="Low: 0"
-            android:textColor="#b45309"
-            android:textSize="10.5sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp" />
+            android:orientation="vertical">
 
-        <!-- Out of Stock Badge -->
-        <TextView
-            android:id="@+id/widget_out_stock"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/widget_inner_box_light"
-            android:text="Out: 0"
-            android:textColor="#dc2626"
-            android:textSize="10.5sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp" />
+            <!-- Row 1: Total Item (Blue) -->
+            <LinearLayout
+                android:id="@+id/widget_row_total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginBottom="3dp">
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/widget_bullet_blue"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="@null" />
+                <TextView
+                    android:id="@+id/widget_label_total"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Item"
+                    android:textColor="#475569"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/widget_total_items"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Row 2: Low Stock (Orange) -->
+            <LinearLayout
+                android:id="@+id/widget_row_low"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginBottom="3dp">
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/widget_bullet_orange"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="@null" />
+                <TextView
+                    android:id="@+id/widget_label_low"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Low Stock"
+                    android:textColor="#475569"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/widget_low_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Row 3: Out of Stock (Pink) -->
+            <LinearLayout
+                android:id="@+id/widget_row_out"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginBottom="3dp">
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/widget_bullet_pink"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="@null" />
+                <TextView
+                    android:id="@+id/widget_label_out"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Out of Stock"
+                    android:textColor="#475569"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/widget_out_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Row 4: Tasks to do (Green) -->
+            <LinearLayout
+                android:id="@+id/widget_row_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/widget_bullet_green"
+                    android:layout_marginEnd="6dp"
+                    android:contentDescription="@null" />
+                <TextView
+                    android:id="@+id/widget_label_tasks"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Tasks to do"
+                    android:textColor="#475569"
+                    android:textSize="11sp" />
+                <TextView
+                    android:id="@+id/widget_tasks_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Tasks Box -->
+    <!-- Task Need To Be Done Box -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
         android:background="@drawable/widget_inner_box_light"
-        android:padding="8dp">
+        android:padding="7dp">
 
-        <!-- Today Tasks -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🎯 TODAY'S STOCK AIM &amp; TASKS:"
+            android:text="🎯 TASK NEED TO BE DONE:"
             android:textColor="#64748b"
-            android:textSize="9.5sp"
+            android:textSize="9sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/widget_today_tasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No pending tasks today. All stocks on track!"
+            android:text="Aim 50 (Now 11) • All stocks on track!"
             android:textColor="#0f172a"
             android:textStyle="bold"
             android:textSize="10.5sp"
             android:maxLines="2"
             android:ellipsize="end"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="3dp" />
-
-        <!-- Tomorrow Tasks -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="⏳ TOMORROW:"
-            android:textColor="#64748b"
-            android:textSize="9.5sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/widget_tomorrow_tasks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="All clear for tomorrow."
-            android:textColor="#334155"
-            android:textSize="10.5sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:layout_marginTop="1dp" />
+            android:layout_marginTop="2dp" />
     </LinearLayout>
 
-    <!-- Quick Open Footer Button -->
+    <!-- Action Button -->
     <TextView
         android:id="@+id/widget_btn_open"
         android:layout_width="match_parent"
@@ -177,5 +342,5 @@
         android:gravity="center"
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="7dp" />
 </LinearLayout>

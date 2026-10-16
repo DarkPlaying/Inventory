@@ -135,10 +135,18 @@ export function useBillingLogic() {
     };
   }, [fetchItems]);
 
+  // Static notification: do not set timeout; removed only if none is added
   const showNotification = (text, type = 'success') => {
     setToastMsg({ text, type });
-    setTimeout(() => setToastMsg(null), 2500);
   };
+
+  // Remove notification badge only if none is added (cart is empty)
+  useEffect(() => {
+    const totalCount = Object.values(cart).reduce((sum, q) => sum + (Number(q) || 0), 0);
+    if (totalCount === 0) {
+      setToastMsg(null);
+    }
+  }, [cart]);
 
   // 2. Cart Operations
   const addToCart = (item, delta = 1) => {
@@ -168,6 +176,7 @@ export function useBillingLogic() {
     setCart(prev => ({ ...prev, [item.id]: newQty }));
     playBeep('success');
     triggerHaptic([60]);
+    // Set static notification without timeout
     showNotification(`"${item.name}" qty: ${newQty}`);
   };
 
@@ -196,22 +205,32 @@ export function useBillingLogic() {
         showConfirmButton: false
       });
       setCart(prev => ({ ...prev, [itemId]: maxAvailable }));
+      showNotification(`"${item.name}" qty: ${maxAvailable}`);
       return;
     }
 
-    setCart(prev => ({ ...prev, [itemId]: Math.max(0, valid) }));
+    const finalQty = Math.max(0, valid);
+    setCart(prev => ({ ...prev, [itemId]: finalQty }));
+    if (finalQty > 0) {
+      showNotification(`"${item.name}" qty: ${finalQty}`);
+    }
   };
 
   const removeFromCart = (itemId) => {
     setCart(prev => {
       const copy = { ...prev };
       delete copy[itemId];
+      const remainingCount = Object.values(copy).reduce((sum, q) => sum + (Number(q) || 0), 0);
+      if (remainingCount === 0) {
+        setToastMsg(null);
+      }
       return copy;
     });
   };
 
   const clearCart = () => {
     setCart({});
+    setToastMsg(null);
   };
 
   // Cart Calculations - only entries with quantity > 0 are billed
@@ -595,7 +614,8 @@ export function useBillingLogic() {
     handleConfirmPaymentAndPlaceOrder,
     paymentSuccessData,
     setPaymentSuccessData,
-    toastMsg
+    toastMsg,
+    setToastMsg
   };
 }
 

@@ -1,5 +1,6 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { supabase } from '../supabase';
+import { getAppSettings } from './settingsService';
 
 const NOTIFICATION_STORAGE_KEY = 'inventory_notification_pref';
 export const STOCK_CHANNEL_ID = 'stock_alerts';
@@ -184,8 +185,10 @@ export async function checkAndTriggerDailyStockNotification() {
     const { data: items, error } = await supabase.from('items').select('name, quantity, status');
     if (error || !items) return;
 
-    const outItems = items.filter(x => Number(x.quantity) === 0 || x.status === 'OUT');
-    const lowItems = items.filter(x => Number(x.quantity) > 0 && Number(x.quantity) < 20 && x.status !== 'OUT');
+    const settings = getAppSettings();
+    const limits = settings.stockLimits || { outLimit: 20, lowLimit: 30, stockedLimit: 30 };
+    const outItems = items.filter(x => Number(x.quantity) < limits.outLimit || x.status === 'OUT');
+    const lowItems = items.filter(x => Number(x.quantity) >= limits.outLimit && Number(x.quantity) < limits.lowLimit && x.status !== 'OUT');
 
     let title = '📦 Daily Inventory Status';
     let body = `All ${items.length} inventory items are well-stocked today.`;
@@ -208,7 +211,7 @@ export async function checkAndTriggerDailyStockNotification() {
 /**
  * Schedule a daily repeating notification to check stock levels.
  */
-export async function scheduleDailyStockNotification() {
+export async function scheduleDailyStockNotification(customTime = null) {
   try {
     await ensureNotificationChannel();
     const hasPerm = await checkNotificationPermission();
@@ -219,10 +222,14 @@ export async function scheduleDailyStockNotification() {
       await LocalNotifications.cancel({ notifications: [{ id: 9999 }] });
     } catch (_) {}
 
-    // Schedule daily at 9:00 AM
+    // Schedule daily at user-selected time (default: 09:00 AM)
+    const settings = getAppSettings();
+    const timeStr = customTime || settings.dailyNotificationTime || '09:00';
+    const [hh, mm] = timeStr.split(':').map(Number);
+
     const now = new Date();
     const scheduledTime = new Date();
-    scheduledTime.setHours(9, 0, 0, 0);
+    scheduledTime.setHours(isNaN(hh) ? 9 : hh, isNaN(mm) ? 0 : mm, 0, 0);
     if (scheduledTime <= now) {
       scheduledTime.setDate(scheduledTime.getDate() + 1);
     }

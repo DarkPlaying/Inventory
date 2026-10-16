@@ -45,7 +45,8 @@ export default function Scanner() {
     handleConfirmPaymentAndPlaceOrder,
     paymentSuccessData,
     setPaymentSuccessData,
-    toastMsg
+    toastMsg,
+    setToastMsg
   } = useBillingLogic();
 
   // Manage camera when scanner mode is toggled
@@ -82,11 +83,27 @@ export default function Scanner() {
         </div>
       </header>
 
-      {/* Real-time Feedback Toast */}
+      {/* Static Feedback Toast: Persistent when items are added, removed only if none is added */}
       {toastMsg && (
         <div className={`billing-toast ${toastMsg.type}`}>
           <i className="fa-solid fa-circle-check"></i>
-          <span>{toastMsg.text}</span>
+          <span style={{ flex: 1 }}>{toastMsg.text}</span>
+          <button
+            type="button"
+            onClick={() => setToastMsg(null)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'rgba(255, 255, 255, 0.9)',
+              cursor: 'pointer',
+              fontSize: '15px',
+              padding: '0 4px',
+              lineHeight: 1
+            }}
+            title="Dismiss"
+          >
+            ×
+          </button>
         </div>
       )}
 

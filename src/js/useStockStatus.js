@@ -1,6 +1,7 @@
 import React from 'react';
 import supabase from '../supabase';
 import { useState, useEffect } from 'react';
+import { getAppSettings } from './settingsService';
 
 export function useStockStatus() {
   const [statusData, setStatusData] = useState({
@@ -9,11 +10,17 @@ export function useStockStatus() {
     low: 0,
     stocked: 0,
     outItems: [],
-    lowItems: []
+    lowItems: [],
+    limits: { outLimit: 20, lowLimit: 30, stockedLimit: 30 }
   });
 
   async function fetchStatus() {
     const { data } = await supabase.from('items').select('*');
+    const settings = getAppSettings();
+    const limits = settings.stockLimits || { outLimit: 20, lowLimit: 30, stockedLimit: 30 };
+    const outLimit = limits.outLimit ?? 20;
+    const lowLimit = limits.lowLimit ?? 30;
+
     if (data) {
       let outCount = 0;
       let lowCount = 0;
@@ -23,10 +30,10 @@ export function useStockStatus() {
 
       data.forEach(item => {
         const qty = Number(item.quantity) || 0;
-        if (qty < 20 || item.status === 'OUT') {
+        if (qty < outLimit || item.status === 'OUT') {
           outCount++;
           outList.push(item.name);
-        } else if (qty < 30) {
+        } else if (qty < lowLimit) {
           lowCount++;
           lowList.push(item.name);
         } else {
@@ -40,13 +47,20 @@ export function useStockStatus() {
         low: lowCount,
         stocked: stockedCount,
         outItems: outList,
-        lowItems: lowList
+        lowItems: lowList,
+        limits
       });
     }
   }
 
   useEffect(() => {
     fetchStatus();
+
+    function onSettingsChange() {
+      fetchStatus();
+    }
+    window.addEventListener('inventory-settings-changed', onSettingsChange);
+
     const channelId = `stock-status-${Math.random().toString(36).substring(2, 9)}`;
     const channel = supabase
       .channel(channelId)
@@ -56,6 +70,7 @@ export function useStockStatus() {
       .subscribe();
 
     return () => {
+      window.removeEventListener('inventory-settings-changed', onSettingsChange);
       supabase.removeChannel(channel);
     };
   }, []);

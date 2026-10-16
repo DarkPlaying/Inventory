@@ -3,10 +3,28 @@
 
 :root {
   --app-font: 'Outfit', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --app-font-scale: 100%;
+  --app-zoom: 1;
 }
 
-html,
-body,
+html {
+  font-size: var(--app-font-scale, 100%);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden !important;
+  position: relative;
+  font-family: var(--app-font);
+  font-size: var(--app-font-scale, 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 #root {
   margin: 0;
   padding: 0;
@@ -15,9 +33,7 @@ body,
   overflow-x: hidden !important;
   position: relative;
   font-family: var(--app-font);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  zoom: var(--app-zoom, 1);
 }
 
 button {
@@ -82,7 +98,7 @@ body.swal2-height-auto {
 
 .stock-alert-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--stock-alert-bg, rgba(255, 255, 255, 0.85));
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.6);

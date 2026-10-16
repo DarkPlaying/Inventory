@@ -5,6 +5,7 @@ import {
   checkAndTriggerDailyStockNotification,
   requestNotificationPermission
 } from '../js/notificationService';
+import { syncRealtimeStockToWidget } from '../js/widgetSync';
 
 /**
  * Headless Background Component:
@@ -26,8 +27,15 @@ export default function StockNotification() {
         }
       } catch (_) {}
       checkAndTriggerDailyStockNotification();
+      syncRealtimeStockToWidget();
     }
     initNotifications();
+
+    function onSettingsChange() {
+      syncRealtimeStockToWidget();
+    }
+    window.addEventListener('inventory-settings-changed', onSettingsChange);
+    return () => window.removeEventListener('inventory-settings-changed', onSettingsChange);
   }, []);
 
   // 2. Listen to database realtime changes (INSERT, UPDATE, DELETE)
@@ -40,6 +48,7 @@ export default function StockNotification() {
     const channel = supabase
       .channel('realtime-stock-notifications')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'items' }, (payload) => {
+        syncRealtimeStockToWidget();
         if (!isFirstLoad.current && payload.new) {
           sendStockChangeNotification(
             '📦 New Stock Added',
@@ -48,6 +57,7 @@ export default function StockNotification() {
         }
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'items' }, (payload) => {
+        syncRealtimeStockToWidget();
         if (!isFirstLoad.current && payload.new) {
           sendStockChangeNotification(
             '🔄 Stock Updated',
@@ -56,6 +66,7 @@ export default function StockNotification() {
         }
       })
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'items' }, () => {
+        syncRealtimeStockToWidget();
         if (!isFirstLoad.current) {
           sendStockChangeNotification(
             '🗑️ Stock Removed',

@@ -73,36 +73,7 @@ if (!myProj.hash.project.objects.PBXContainerItemProxy) myProj.hash.project.obje
 const appTargetKey = myProj.findTargetKey('App');
 myProj.addTargetDependency(appTargetKey, [target.uuid]);
 
-// 7. Embed App Extensions in App
-const copyFilesUuid = myProj.generateUuid();
-const buildFileUuid = myProj.generateUuid();
-
-myProj.hash.project.objects.PBXBuildFile[buildFileUuid] = {
-    isa: 'PBXBuildFile',
-    fileRef: target.pbxNativeTarget.productReference,
-    fileRef_comment: 'StockWidgetExtension.appex',
-    settings: { ATTRIBUTES: ['RemoveHeadersOnCopy'] }
-};
-myProj.hash.project.objects.PBXBuildFile[buildFileUuid + '_comment'] = 'StockWidgetExtension.appex in Embed App Extensions';
-
-if (!myProj.hash.project.objects.PBXCopyFilesBuildPhase) {
-    myProj.hash.project.objects.PBXCopyFilesBuildPhase = {};
-}
-myProj.hash.project.objects.PBXCopyFilesBuildPhase[copyFilesUuid] = {
-    isa: 'PBXCopyFilesBuildPhase',
-    buildActionMask: 2147483647,
-    dstPath: '""',
-    dstSubfolderSpec: 13,
-    files: [
-        { value: buildFileUuid, comment: 'StockWidgetExtension.appex in Embed App Extensions' }
-    ],
-    name: '"Embed App Extensions"',
-    runOnlyForDeploymentPostprocessing: 0
-};
-myProj.hash.project.objects.PBXCopyFilesBuildPhase[copyFilesUuid + '_comment'] = 'Embed App Extensions';
-
-const appTarget = myProj.pbxNativeTargetSection()[appTargetKey];
-appTarget.buildPhases.push({ value: copyFilesUuid, comment: 'Embed App Extensions' });
+// 7. addTarget already sets up the CopyFiles build phase automatically for app_extension!
 
 // Write back
 fs.writeFileSync(projectPath, myProj.writeSync());
