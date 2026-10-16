@@ -523,7 +523,7 @@ struct StockWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             StockWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("Product Activity")
+        .configurationDisplayName("Stock & Task Reminder")
         .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
         // Sets the Large ("long one") widget as the default option shown first in the iOS widget picker gallery
         .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])

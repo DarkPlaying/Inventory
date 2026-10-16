@@ -41,6 +41,12 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
           cd derived_data/Build/Products/Debug-iphonesimulator
+          echo "Verifying Widget extension in App.app:"
+          ls -la App.app/PlugIns/StockWidgetExtension.appex/ || true
+          plutil -p App.app/PlugIns/StockWidgetExtension.appex/Info.plist | grep -E "CFBundlePackageType|NSExtensionPointIdentifier" || true
+          # Ad-hoc sign both extension and app container so iOS Simulator / Appetize registers WidgetKit
+          codesign --force --deep --sign - App.app/PlugIns/StockWidgetExtension.appex || true
+          codesign --force --deep --sign - App.app
           zip -r "$GITHUB_WORKSPACE/App-Simulator-appetize.zip" App.app
 
       - name: Upload iOS Simulator Artifact (for Appetize.io)
