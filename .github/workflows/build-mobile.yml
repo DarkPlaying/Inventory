@@ -37,13 +37,15 @@ jobs:
             -sdk iphonesimulator \
             -derivedDataPath derived_data \
             build \
+            ENABLE_DEBUG_DYLIB=NO \
+            ENABLE_PREVIEWS=NO \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
           cd derived_data/Build/Products/Debug-iphonesimulator
           echo "Verifying Widget extension in App.app:"
           ls -la App.app/PlugIns/StockWidgetExtension.appex/ || true
-          plutil -p App.app/PlugIns/StockWidgetExtension.appex/Info.plist | grep -E "CFBundlePackageType|NSExtensionPointIdentifier" || true
+          plutil -p App.app/PlugIns/StockWidgetExtension.appex/Info.plist | grep -E "CFBundleDisplayName|CFBundlePackageType|NSExtensionPointIdentifier" || true
           # Ad-hoc sign both extension and app container so iOS Simulator / Appetize registers WidgetKit
           codesign --force --deep --sign - App.app/PlugIns/StockWidgetExtension.appex || true
           codesign --force --deep --sign - App.app
@@ -64,6 +66,8 @@ jobs:
             -destination 'generic/platform=iOS' \
             -archivePath build/App.xcarchive \
             archive \
+            ENABLE_DEBUG_DYLIB=NO \
+            ENABLE_PREVIEWS=NO \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
@@ -72,6 +76,9 @@ jobs:
         run: |
           mkdir -p Payload
           cp -r ios/App/build/App.xcarchive/Products/Applications/App.app Payload/
+          echo "Verifying Widget extension in Device IPA:"
+          ls -la Payload/App.app/PlugIns/StockWidgetExtension.appex/ || true
+          plutil -p Payload/App.app/PlugIns/StockWidgetExtension.appex/Info.plist | grep -E "CFBundleDisplayName|CFBundlePackageType|NSExtensionPointIdentifier" || true
           zip -r "$GITHUB_WORKSPACE/App-unsigned.ipa" Payload
 
       - name: Upload iOS IPA Artifact (for physical devices)

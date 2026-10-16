@@ -31,6 +31,10 @@ struct Provider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (StockWidgetEntry) -> Void) {
+        if context.isPreview {
+            completion(placeholder(in: context))
+            return
+        }
         completion(loadData())
     }
 
@@ -157,8 +161,8 @@ struct StockWidgetEntryView: View {
         entry.theme == "dark" || entry.theme == "black"
     }
 
-    var body: some View {
-        ZStack {
+    private var backgroundGradient: some View {
+        Group {
             if isDark {
                 LinearGradient(
                     gradient: Gradient(colors: [Color(hex: "0F172A"), Color(hex: "1E293B")]),
@@ -172,7 +176,11 @@ struct StockWidgetEntryView: View {
                     endPoint: .bottomTrailing
                 )
             }
+        }
+    }
 
+    private var widgetContent: some View {
+        Group {
             switch family {
             case .systemLarge:
                 largeWidgetView
@@ -183,6 +191,20 @@ struct StockWidgetEntryView: View {
             }
         }
         .widgetURL(URL(string: "inventoryapp://stock-tasks"))
+    }
+
+    var body: some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            widgetContent
+                .containerBackground(for: .widget) {
+                    backgroundGradient
+                }
+        } else {
+            ZStack {
+                backgroundGradient
+                widgetContent
+            }
+        }
     }
 
     // MARK: - Small Widget (158x158)
@@ -519,13 +541,23 @@ extension Color {
 struct StockWidget: Widget {
     let kind: String = "StockWidget"
 
+    @WidgetConfigurationBuilder
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            StockWidgetEntryView(entry: entry)
+        if #available(iOSApplicationExtension 17.0, *) {
+            StaticConfiguration(kind: kind, provider: Provider()) { entry in
+                StockWidgetEntryView(entry: entry)
+            }
+            .configurationDisplayName("Stock & Task Reminder")
+            .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
+            .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])
+            .contentMarginsDisabled()
+        } else {
+            StaticConfiguration(kind: kind, provider: Provider()) { entry in
+                StockWidgetEntryView(entry: entry)
+            }
+            .configurationDisplayName("Stock & Task Reminder")
+            .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
+            .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])
         }
-        .configurationDisplayName("Stock & Task Reminder")
-        .description("Track Total Items, Low Stock, Out of Stock, and Tasks right on your Home Screen.")
-        // Sets the Large ("long one") widget as the default option shown first in the iOS widget picker gallery
-        .supportedFamilies([.systemLarge, .systemMedium, .systemSmall])
     }
 }
