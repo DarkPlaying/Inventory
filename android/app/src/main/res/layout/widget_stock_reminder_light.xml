@@ -7,17 +7,18 @@
     android:background="@drawable/widget_bg_light"
     android:padding="12dp">
 
-    <!-- Top Header: Product Activity + Theme Switcher + Live Badge -->
+    <!-- Top Header: Product Activity + Theme Switcher Icon + Live Badge -->
     <LinearLayout
+        android:id="@+id/widget_header_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="6dp">
+        android:layout_marginBottom="8dp">
 
         <ImageView
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/app_logo"
             android:scaleType="fitCenter"
             android:layout_marginEnd="8dp"
@@ -30,29 +31,24 @@
             android:text="Product Activity"
             android:textColor="#0f172a"
             android:textStyle="bold"
-            android:textSize="14sp" />
+            android:textSize="13.5sp" />
 
-        <!-- Theme Toggle -->
+        <!-- Theme Toggle Circular Icon Button -->
         <TextView
             android:id="@+id/widget_theme_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@drawable/widget_theme_btn_bg"
-            android:text="🌓 Theme"
-            android:textColor="#334155"
-            android:textStyle="bold"
-            android:textSize="9.5sp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:paddingStart="7dp"
-            android:paddingEnd="7dp"
-            android:layout_marginEnd="6dp" />
+            android:text="🌙"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_marginEnd="8dp" />
 
         <TextView
             android:id="@+id/widget_sync_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Live"
+            android:text="● Live"
             android:textColor="#0284c7"
             android:textStyle="bold"
             android:textSize="9.5sp" />
@@ -60,13 +56,14 @@
 
     <!-- Interactive Period Filter Pills (1W, 1M, 3W, YTD, Total) -->
     <LinearLayout
+        android:id="@+id/widget_pills_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/widget_pill_bar_bg"
         android:padding="2.5dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="9dp">
 
         <TextView
             android:id="@+id/widget_tab_1w"
@@ -78,8 +75,8 @@
             android:textSize="9.5sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp" />
+            android:paddingTop="3.5dp"
+            android:paddingBottom="3.5dp" />
 
         <TextView
             android:id="@+id/widget_tab_1m"
@@ -90,8 +87,8 @@
             android:textColor="#64748b"
             android:textSize="9.5sp"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp" />
+            android:paddingTop="3.5dp"
+            android:paddingBottom="3.5dp" />
 
         <TextView
             android:id="@+id/widget_tab_3w"
@@ -102,8 +99,8 @@
             android:textColor="#64748b"
             android:textSize="9.5sp"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp" />
+            android:paddingTop="3.5dp"
+            android:paddingBottom="3.5dp" />
 
         <TextView
             android:id="@+id/widget_tab_ytd"
@@ -114,8 +111,8 @@
             android:textColor="#64748b"
             android:textSize="9.5sp"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp" />
+            android:paddingTop="3.5dp"
+            android:paddingBottom="3.5dp" />
 
         <TextView
             android:id="@+id/widget_tab_total"
@@ -126,29 +123,31 @@
             android:textColor="#64748b"
             android:textSize="9.5sp"
             android:gravity="center"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp" />
+            android:paddingTop="3.5dp"
+            android:paddingBottom="3.5dp" />
     </LinearLayout>
 
-    <!-- Main Section: Donut Ring Chart on Left + 4 Interactive Breakdown Rows on Right -->
+    <!-- Main Analytics: Donut Ring Chart on Left + 4 Stock Breakdown Rows on Right -->
     <LinearLayout
+        android:id="@+id/widget_main_analytics_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_marginBottom="8dp">
 
-        <!-- Donut Ring Chart ImageView (Programmatically Rendered) -->
+        <!-- Donut Ring Chart ImageView -->
         <ImageView
             android:id="@+id/widget_gauge_img"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="94dp"
+            android:layout_height="94dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="12dp"
             android:contentDescription="Activity Donut Gauge" />
 
-        <!-- 4 Interactive Metric Rows with Colored Bullets -->
+        <!-- 4 Metric Rows with Colored Bullets -->
         <LinearLayout
+            android:id="@+id/widget_rows_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -161,14 +160,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:layout_marginBottom="3dp">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="2.5dp"
+                android:paddingBottom="2.5dp"
+                android:layout_marginBottom="2.5dp">
                 <ImageView
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
                     android:background="@drawable/widget_bullet_blue"
                     android:layout_marginEnd="6dp"
                     android:contentDescription="@null" />
@@ -197,14 +196,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:layout_marginBottom="3dp">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="2.5dp"
+                android:paddingBottom="2.5dp"
+                android:layout_marginBottom="2.5dp">
                 <ImageView
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
                     android:background="@drawable/widget_bullet_orange"
                     android:layout_marginEnd="6dp"
                     android:contentDescription="@null" />
@@ -233,14 +232,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:layout_marginBottom="3dp">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="2.5dp"
+                android:paddingBottom="2.5dp"
+                android:layout_marginBottom="2.5dp">
                 <ImageView
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
                     android:background="@drawable/widget_bullet_pink"
                     android:layout_marginEnd="6dp"
                     android:contentDescription="@null" />
@@ -269,13 +268,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="2.5dp"
+                android:paddingBottom="2.5dp">
                 <ImageView
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
                     android:background="@drawable/widget_bullet_green"
                     android:layout_marginEnd="6dp"
                     android:contentDescription="@null" />
@@ -301,19 +300,20 @@
 
     <!-- Task Need To Be Done Box -->
     <LinearLayout
+        android:id="@+id/widget_task_box"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/widget_inner_box_light"
-        android:padding="7dp">
+        android:padding="7dp"
+        android:layout_marginBottom="8dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="🎯 TASK NEED TO BE DONE:"
             android:textColor="#64748b"
-            android:textSize="9sp"
+            android:textSize="8.5sp"
             android:textStyle="bold" />
 
         <TextView
@@ -329,6 +329,232 @@
             android:layout_marginTop="2dp" />
     </LinearLayout>
 
+    <!-- 2x2 Metric KPI Cards Grid (Nominal Balance, Total Stock, Nominal Revenue, Tasks Remaining) -->
+    <LinearLayout
+        android:id="@+id/widget_kpi_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
+
+        <!-- Row 1: Balance + Stock Product -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp">
+
+            <!-- Card 1: Nominal Balance -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/widget_kpi_card_light"
+                android:padding="7dp"
+                android:layout_marginEnd="3.5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/widget_bullet_pink"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Nominal Balance"
+                        android:textColor="#64748b"
+                        android:textSize="8.5sp"
+                        android:singleLine="true" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="↑ 1.19%"
+                        android:textColor="#10b981"
+                        android:textSize="7.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/widget_kpi_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="26,852 USD"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginTop="3dp"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <!-- Card 2: Total Stock Product -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/widget_kpi_card_light"
+                android:padding="7dp"
+                android:layout_marginStart="3.5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/widget_bullet_blue"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Total Stock Product"
+                        android:textColor="#64748b"
+                        android:textSize="8.5sp"
+                        android:singleLine="true" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="↑ 0.29%"
+                        android:textColor="#10b981"
+                        android:textSize="7.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/widget_kpi_total_items"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="89 Items"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginTop="3dp"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Row 2: Revenue + Tasks Remaining -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Card 3: Nominal Revenue -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/widget_kpi_card_light"
+                android:padding="7dp"
+                android:layout_marginEnd="3.5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/widget_bullet_green"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Nominal Revenue"
+                        android:textColor="#64748b"
+                        android:textSize="8.5sp"
+                        android:singleLine="true" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="↑ 0.29%"
+                        android:textColor="#10b981"
+                        android:textSize="7.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/widget_kpi_revenue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="26,852 USD"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginTop="3dp"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+            <!-- Card 4: Tasks Remaining -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/widget_kpi_card_light"
+                android:padding="7dp"
+                android:layout_marginStart="3.5dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="6dp"
+                        android:layout_height="6dp"
+                        android:background="@drawable/widget_bullet_purple"
+                        android:layout_marginEnd="4dp"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tasks Remaining"
+                        android:textColor="#64748b"
+                        android:textSize="8.5sp"
+                        android:singleLine="true" />
+                    <TextView
+                        android:id="@+id/widget_kpi_tasks_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✓ Clear"
+                        android:textColor="#10b981"
+                        android:textSize="7.5sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/widget_kpi_tasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0 Tasks"
+                    android:textColor="#0f172a"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginTop="3dp"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Spacer to absorb vertical space neatly -->
+    <LinearLayout
+        android:id="@+id/widget_spacer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" />
+
     <!-- Action Button -->
     <TextView
         android:id="@+id/widget_btn_open"
@@ -340,7 +566,6 @@
         android:textStyle="bold"
         android:textSize="11sp"
         android:gravity="center"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
-        android:layout_marginTop="7dp" />
+        android:paddingTop="6.5dp"
+        android:paddingBottom="6.5dp" />
 </LinearLayout>

@@ -15,11 +15,14 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
 import android.widget.RemoteViews;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -82,6 +85,12 @@ public class StockWidgetProvider extends AppWidgetProvider {
         }
     }
 
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+        updateAppWidget(context, appWidgetManager, appWidgetId);
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+    }
+
     public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
@@ -99,6 +108,8 @@ public class StockWidgetProvider extends AppWidgetProvider {
         int lowStock = prefs.getInt("low_stock_count", 0);
         int outStock = prefs.getInt("out_of_stock_count", 0);
         int tasksCount = prefs.getInt("tasks_count", 0);
+        int nominalBalance = prefs.getInt("nominal_balance", 26852);
+        int nominalRevenue = prefs.getInt("nominal_revenue", 26852);
 
         String todayTasks = prefs.getString("today_tasks_text", "Aim 50 (Now 11) • All stocks on track!");
 
@@ -111,6 +122,57 @@ public class StockWidgetProvider extends AppWidgetProvider {
         views.setTextViewText(R.id.widget_tasks_count, String.valueOf(tasksCount));
         views.setTextViewText(R.id.widget_today_tasks, todayTasks);
 
+        // Check widget dimensions for dynamic responsive alignment
+        Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
+        int minHeight = options != null ? options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0) : 0;
+        int minWidth = options != null ? options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) : 0;
+
+        // Apply responsive visibility based on height
+        if (minHeight >= 200) {
+            // Large Widget (Tall/Expanded): Donut + Stocks + Task Box + 2x2 KPI Cards
+            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_pills_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_rows_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_task_box, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_kpi_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_btn_open, View.VISIBLE);
+
+            // Populate 2x2 KPI cards
+            views.setTextViewText(R.id.widget_kpi_balance, String.format(Locale.US, "%,d USD", nominalBalance));
+            views.setTextViewText(R.id.widget_kpi_total_items, totalItems + " Items");
+            views.setTextViewText(R.id.widget_kpi_revenue, String.format(Locale.US, "%,d USD", nominalRevenue));
+            views.setTextViewText(R.id.widget_kpi_tasks, tasksCount + " Tasks");
+            views.setTextViewText(R.id.widget_kpi_tasks_badge, tasksCount == 0 ? "✓ Clear" : "Pending");
+        } else if (minHeight >= 115) {
+            // Medium Widget: Donut + Stocks + Task Aim Banner
+            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_pills_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_rows_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_task_box, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_kpi_container, View.GONE);
+            views.setViewVisibility(R.id.widget_btn_open, minHeight >= 155 ? View.VISIBLE : View.GONE);
+        } else if (minHeight > 0) {
+            // Small/Compact Widget: Donut + Compact elements
+            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_pills_container, View.GONE);
+            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_rows_container, minWidth >= 170 ? View.VISIBLE : View.GONE);
+            views.setViewVisibility(R.id.widget_task_box, View.GONE);
+            views.setViewVisibility(R.id.widget_kpi_container, View.GONE);
+            views.setViewVisibility(R.id.widget_btn_open, View.GONE);
+        } else {
+            // Default when launcher hasn't supplied dimensions yet
+            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_pills_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_rows_container, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_task_box, View.VISIBLE);
+            views.setViewVisibility(R.id.widget_kpi_container, View.GONE);
+            views.setViewVisibility(R.id.widget_btn_open, View.VISIBLE);
+        }
+
         // Update Date Category Tabs (1W, 1M, 3W, YTD, Total)
         String[] periods = {"1W", "1M", "3W", "YTD", "Total"};
         int[] tabIds = {
@@ -122,7 +184,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
         };
 
         int mutedColor = isDark ? Color.parseColor("#94a3b8") : Color.parseColor("#64748b");
-        int activeColor = Color.parseColor("#0f172a");
+        int activeColor = isDark ? Color.parseColor("#f8fafc") : Color.parseColor("#0f172a");
 
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -214,14 +276,13 @@ public class StockWidgetProvider extends AppWidgetProvider {
         toggleIntent.setAction(ACTION_TOGGLE_THEME);
         PendingIntent togglePendingIntent = PendingIntent.getBroadcast(context, 101, toggleIntent, flags);
         views.setOnClickPendingIntent(R.id.widget_theme_toggle, togglePendingIntent);
+        views.setTextViewText(R.id.widget_theme_toggle, isDark ? "☀️" : "🌙");
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     /**
-     * Dynamically renders the multi-colored circular donut ring chart matching img 2.
-     * Guarantees all 4 colors (Blue, Orange, Green, Pink) are ALWAYS visibly rendered,
-     * accounts for rounded cap spacing, and clearly highlights the selected category.
+     * Programmatically render the Dribbble-inspired Donut Gauge chart with separated arcs & text.
      */
     private static Bitmap createActivityDonutBitmap(
         Context context,
@@ -229,122 +290,115 @@ public class StockWidgetProvider extends AppWidgetProvider {
         int lowStock,
         int outStock,
         int tasksCount,
-        String activeCategory,
+        String selectedCategory,
         boolean isDark
     ) {
-        int size = 260;
+        int size = 260; // crisp high-DPI bitmap
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
-        float baseStrokeWidth = 22f;
-        float padding = baseStrokeWidth / 2f + 8f;
+        float stroke = 22f;
+        float padding = stroke / 2f + 8f;
         RectF oval = new RectF(padding, padding, size - padding, size - padding);
 
-        // Base background track ring
+        // Background track ring
         Paint trackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         trackPaint.setStyle(Paint.Style.STROKE);
-        trackPaint.setStrokeWidth(baseStrokeWidth);
-        trackPaint.setColor(isDark ? Color.parseColor("#334155") : Color.parseColor("#f1f5f9"));
+        trackPaint.setStrokeWidth(stroke);
+        trackPaint.setColor(isDark ? Color.parseColor("#1e293b") : Color.parseColor("#e2e8f0"));
         canvas.drawOval(oval, trackPaint);
 
-        // Segment colors matching img 2
-        int colorBlue = Color.parseColor("#0ea5e9");   // Total Item / In Stock
-        int colorOrange = Color.parseColor("#f59e0b"); // Low Stock
-        int colorPink = Color.parseColor("#ec4899");   // Out of Stock
-        int colorGreen = Color.parseColor("#10b981");  // Tasks to do
+        // Palette definition
+        int blueColor = Color.parseColor("#38bdf8");   // Total Item
+        int orangeColor = Color.parseColor("#f59e0b"); // Low Stock
+        int pinkColor = Color.parseColor("#ec4899");   // Out of Stock
+        int greenColor = Color.parseColor("#10b981");  // Tasks to do
 
-        int[] colors = new int[]{colorBlue, colorOrange, colorPink, colorGreen};
-        String[] catKeys = new String[]{"total", "low", "out", "tasks"};
-
-        // Base proportion allocation guaranteeing all 4 colors are ALWAYS visually distinct
-        float minShare = 0.14f;
-        float remainingShare = 1.0f - (minShare * 4); // ~0.44 to distribute based on counts
-
-        int valBlue = Math.max(0, totalItems - lowStock - outStock);
-        int valOrange = Math.max(0, lowStock);
-        int valPink = Math.max(0, outStock);
-        int valGreen = Math.max(0, tasksCount);
-        int totalSum = valBlue + valOrange + valPink + valGreen;
-
-        float[] shares = new float[4];
-        for (int i = 0; i < 4; i++) {
-            int val = (i == 0) ? valBlue : (i == 1) ? valOrange : (i == 2) ? valPink : valGreen;
-            float extra = totalSum > 0 ? ((float) val / totalSum) * remainingShare : (remainingShare / 4f);
-            shares[i] = minShare + extra;
-        }
-
-        Paint arcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        arcPaint.setStyle(Paint.Style.STROKE);
-        arcPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        float currentAngle = -90f; // start at 12 o'clock
-        // Gap of 18 degrees accounts for rounded stroke caps and ensures clear visible spacing between arcs
+        // Arc sweep setup with 18 degree gaps between rounded caps to prevent collisions
         float gap = 18f;
+        float startAngle = -90f;
 
-        for (int i = 0; i < 4; i++) {
-            float sweep = shares[i] * 360f;
-            boolean isThisSelected = catKeys[i].equalsIgnoreCase(activeCategory);
+        float sweepTotal = 130f;
+        float sweepLow = 75f;
+        float sweepOut = 55f;
+        float sweepTasks = 28f;
 
-            // Highlight the selected segment with thicker stroke
-            arcPaint.setStrokeWidth(isThisSelected ? 28f : baseStrokeWidth);
-            arcPaint.setColor(colors[i]);
+        drawDonutArc(canvas, oval, startAngle, sweepTotal, stroke, blueColor, "total".equalsIgnoreCase(selectedCategory));
 
-            if (sweep > gap + 4f) {
-                canvas.drawArc(oval, currentAngle + (gap / 2f), sweep - gap, false, arcPaint);
-            }
-            currentAngle += sweep;
+        startAngle += sweepTotal + gap;
+        drawDonutArc(canvas, oval, startAngle, sweepLow, stroke, orangeColor, "low".equalsIgnoreCase(selectedCategory));
+
+        startAngle += sweepLow + gap;
+        drawDonutArc(canvas, oval, startAngle, sweepOut, stroke, pinkColor, "out".equalsIgnoreCase(selectedCategory));
+
+        startAngle += sweepOut + gap;
+        drawDonutArc(canvas, oval, startAngle, sweepTasks, stroke, greenColor, "tasks".equalsIgnoreCase(selectedCategory));
+
+        // Center display logic
+        String displayCount = String.valueOf(totalItems);
+        String displayLabel = "Total Stock";
+
+        if ("low".equalsIgnoreCase(selectedCategory)) {
+            displayCount = String.valueOf(lowStock);
+            displayLabel = "Low Stock";
+        } else if ("out".equalsIgnoreCase(selectedCategory)) {
+            displayCount = String.valueOf(outStock);
+            displayLabel = "Out of Stock";
+        } else if ("tasks".equalsIgnoreCase(selectedCategory)) {
+            displayCount = String.valueOf(tasksCount);
+            displayLabel = "Tasks To Do";
         }
 
-        // Center Text: Show count and label for the SELECTED category with clean vertical spacing
-        String centerCount;
-        String centerLabel;
-        int accentColor;
+        // Center number
+        Paint numberPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        numberPaint.setColor(isDark ? Color.parseColor("#f8fafc") : Color.parseColor("#0f172a"));
+        numberPaint.setTextSize(54f);
+        numberPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+        numberPaint.setTextAlign(Paint.Align.CENTER);
 
-        if ("low".equalsIgnoreCase(activeCategory)) {
-            centerCount = String.valueOf(lowStock);
-            centerLabel = "Low Stock";
-            accentColor = colorOrange;
-        } else if ("out".equalsIgnoreCase(activeCategory)) {
-            centerCount = String.valueOf(outStock);
-            centerLabel = "Out of Stock";
-            accentColor = colorPink;
-        } else if ("tasks".equalsIgnoreCase(activeCategory)) {
-            centerCount = String.valueOf(tasksCount);
-            centerLabel = "Tasks to do";
-            accentColor = colorGreen;
-        } else {
-            // "total", "none", or default
-            centerCount = String.valueOf(totalItems > 0 ? totalItems : 11);
-            centerLabel = "Total Items";
-            accentColor = colorBlue;
-        }
-
-        // Center Number - positioned above center
-        Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        textPaint.setColor(isDark ? Color.parseColor("#f8fafc") : Color.parseColor("#0f172a"));
-        textPaint.setTextSize(44f);
-
-        // Baseline placed slightly above vertical center to prevent collision with label below
-        float countBaselineY = size / 2f - 4f;
-        canvas.drawText(centerCount, size / 2f, countBaselineY, textPaint);
-
-        // Center Subtitle - positioned below center with ample spacing
+        // Center label
         Paint labelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        labelPaint.setColor(isDark ? Color.parseColor("#94a3b8") : Color.parseColor("#64748b"));
+        labelPaint.setTextSize(19f);
+        labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.NORMAL));
         labelPaint.setTextAlign(Paint.Align.CENTER);
-        labelPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        labelPaint.setColor(accentColor);
-        labelPaint.setTextSize(17f);
 
-        float labelBaselineY = size / 2f + 24f;
-        canvas.drawText(centerLabel, size / 2f, labelBaselineY, labelPaint);
+        Rect bounds = new Rect();
+        numberPaint.getTextBounds(displayCount, 0, displayCount.length(), bounds);
+
+        canvas.drawText(displayCount, size / 2f, size / 2f - 4f, numberPaint);
+        canvas.drawText(displayLabel, size / 2f, size / 2f + 24f, labelPaint);
 
         return bitmap;
     }
 
+    private static void drawDonutArc(
+        Canvas canvas,
+        RectF oval,
+        float startAngle,
+        float sweepAngle,
+        float stroke,
+        int color,
+        boolean isSelected
+    ) {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setColor(color);
+
+        if (isSelected) {
+            paint.setStrokeWidth(stroke + 6f);
+            paint.setAlpha(255);
+        } else {
+            paint.setStrokeWidth(stroke);
+            paint.setAlpha(235);
+        }
+
+        canvas.drawArc(oval, startAngle, sweepAngle, false, paint);
+    }
+
     /**
-     * Directly loads the live inventory from Supabase in the background to keep widget data fresh
+     * Background inventory fetch from Supabase to automatically populate live counts
      */
     public static void fetchInventoryInBackground(final Context context) {
         new Thread(new Runnable() {
@@ -352,7 +406,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
             public void run() {
                 HttpURLConnection conn = null;
                 try {
-                    String urlStr = "https://fjsqkyapsbdwxkvsstgm.supabase.co/rest/v1/items?select=id,name,quantity,status";
+                    String urlStr = "https://fjsqkyapsbdwxkvsstgm.supabase.co/rest/v1/items?select=id,name,quantity,price,total_price,status";
                     URL url = new URL(urlStr);
                     conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");
@@ -375,6 +429,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
                         int total = items.length();
                         int lowCount = 0;
                         int outCount = 0;
+                        double balanceTotal = 0.0;
 
                         int outLimit = 20;
                         int lowLimit = 30;
@@ -382,7 +437,15 @@ public class StockWidgetProvider extends AppWidgetProvider {
                         for (int i = 0; i < items.length(); i++) {
                             JSONObject item = items.getJSONObject(i);
                             int qty = item.optInt("quantity", 0);
+                            double price = item.optDouble("price", 0.0);
+                            double tp = item.optDouble("total_price", 0.0);
                             String status = item.optString("status", "");
+
+                            if (tp > 0) {
+                                balanceTotal += tp;
+                            } else {
+                                balanceTotal += (price * qty);
+                            }
 
                             if (qty < outLimit || "OUT".equalsIgnoreCase(status)) {
                                 outCount++;
@@ -392,11 +455,16 @@ public class StockWidgetProvider extends AppWidgetProvider {
                         }
 
                         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                        prefs.edit()
+                        SharedPreferences.Editor editor = prefs.edit()
                             .putInt("total_items_count", total)
                             .putInt("low_stock_count", lowCount)
-                            .putInt("out_of_stock_count", outCount)
-                            .apply();
+                            .putInt("out_of_stock_count", outCount);
+
+                        if (balanceTotal > 0) {
+                            editor.putInt("nominal_balance", (int) Math.round(balanceTotal));
+                            editor.putInt("nominal_revenue", (int) Math.round(balanceTotal));
+                        }
+                        editor.apply();
 
                         // Notify widget to refresh with fresh live data
                         notifyDataChanged(context);
@@ -415,9 +483,10 @@ public class StockWidgetProvider extends AppWidgetProvider {
         ComponentName widgetComponent = new ComponentName(context, StockWidgetProvider.class);
         int[] widgetIds = manager.getAppWidgetIds(widgetComponent);
         if (widgetIds != null && widgetIds.length > 0) {
-            for (int id : widgetIds) {
-                updateAppWidget(context, manager, id);
-            }
+            Intent intent = new Intent(context, StockWidgetProvider.class);
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
+            context.sendBroadcast(intent);
         }
     }
 }
