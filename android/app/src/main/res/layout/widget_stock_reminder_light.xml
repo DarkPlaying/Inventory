@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="7dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -63,7 +63,7 @@
         android:gravity="center_vertical"
         android:background="@drawable/widget_pill_bar_bg"
         android:padding="2.5dp"
-        android:layout_marginBottom="9dp">
+        android:layout_marginBottom="8dp">
 
         <TextView
             android:id="@+id/widget_tab_1w"
@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="7dp">
 
         <!-- Donut Ring Chart ImageView -->
         <ImageView
@@ -164,7 +164,7 @@
                 android:paddingEnd="5dp"
                 android:paddingTop="2.5dp"
                 android:paddingBottom="2.5dp"
-                android:layout_marginBottom="2.5dp">
+                android:layout_marginBottom="2dp">
                 <ImageView
                     android:layout_width="7dp"
                     android:layout_height="7dp"
@@ -200,7 +200,7 @@
                 android:paddingEnd="5dp"
                 android:paddingTop="2.5dp"
                 android:paddingBottom="2.5dp"
-                android:layout_marginBottom="2.5dp">
+                android:layout_marginBottom="2dp">
                 <ImageView
                     android:layout_width="7dp"
                     android:layout_height="7dp"
@@ -236,7 +236,7 @@
                 android:paddingEnd="5dp"
                 android:paddingTop="2.5dp"
                 android:paddingBottom="2.5dp"
-                android:layout_marginBottom="2.5dp">
+                android:layout_marginBottom="2dp">
                 <ImageView
                     android:layout_width="7dp"
                     android:layout_height="7dp"
@@ -306,7 +306,7 @@
         android:orientation="vertical"
         android:background="@drawable/widget_inner_box_light"
         android:padding="7dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="7dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -329,31 +329,37 @@
             android:layout_marginTop="2dp" />
     </LinearLayout>
 
-    <!-- 2x2 Metric KPI Cards Grid (Nominal Balance, Total Stock, Nominal Revenue, Tasks Remaining) -->
+    <!-- 2x2 Metric KPI Cards Grid: Uses Free Space with layout_weight="1" -->
     <LinearLayout
         android:id="@+id/widget_kpi_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone">
+        android:layout_marginBottom="7dp"
+        android:visibility="visible">
 
         <!-- Row 1: Balance + Stock Product -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="4dp">
 
             <!-- Card 1: Nominal Balance -->
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
+                android:gravity="center_vertical"
                 android:background="@drawable/widget_kpi_card_light"
-                android:padding="7dp"
-                android:layout_marginEnd="3.5dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginEnd="3dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -388,20 +394,24 @@
                     android:text="26,852 USD"
                     android:textColor="#0f172a"
                     android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:layout_marginTop="3dp"
+                    android:textSize="12.5sp"
+                    android:layout_marginTop="2dp"
                     android:singleLine="true" />
             </LinearLayout>
 
             <!-- Card 2: Total Stock Product -->
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
+                android:gravity="center_vertical"
                 android:background="@drawable/widget_kpi_card_light"
-                android:padding="7dp"
-                android:layout_marginStart="3.5dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginStart="3dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -436,8 +446,8 @@
                     android:text="89 Items"
                     android:textColor="#0f172a"
                     android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:layout_marginTop="3dp"
+                    android:textSize="12.5sp"
+                    android:layout_marginTop="2dp"
                     android:singleLine="true" />
             </LinearLayout>
         </LinearLayout>
@@ -445,18 +455,23 @@
         <!-- Row 2: Revenue + Tasks Remaining -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <!-- Card 3: Nominal Revenue -->
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
+                android:gravity="center_vertical"
                 android:background="@drawable/widget_kpi_card_light"
-                android:padding="7dp"
-                android:layout_marginEnd="3.5dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginEnd="3dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -491,20 +506,24 @@
                     android:text="26,852 USD"
                     android:textColor="#0f172a"
                     android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:layout_marginTop="3dp"
+                    android:textSize="12.5sp"
+                    android:layout_marginTop="2dp"
                     android:singleLine="true" />
             </LinearLayout>
 
             <!-- Card 4: Tasks Remaining -->
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical"
+                android:gravity="center_vertical"
                 android:background="@drawable/widget_kpi_card_light"
-                android:padding="7dp"
-                android:layout_marginStart="3.5dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginStart="3dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -540,20 +559,12 @@
                     android:text="0 Tasks"
                     android:textColor="#0f172a"
                     android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:layout_marginTop="3dp"
+                    android:textSize="12.5sp"
+                    android:layout_marginTop="2dp"
                     android:singleLine="true" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <!-- Spacer to absorb vertical space neatly -->
-    <LinearLayout
-        android:id="@+id/widget_spacer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical" />
 
     <!-- Action Button -->
     <TextView

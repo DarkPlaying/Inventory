@@ -125,53 +125,26 @@ public class StockWidgetProvider extends AppWidgetProvider {
         // Check widget dimensions for dynamic responsive alignment
         Bundle options = appWidgetManager.getAppWidgetOptions(appWidgetId);
         int minHeight = options != null ? options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 0) : 0;
-        int minWidth = options != null ? options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) : 0;
+        int maxHeight = options != null ? options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0) : 0;
+        int effectiveHeight = Math.max(minHeight, maxHeight);
 
-        // Apply responsive visibility based on height
-        if (minHeight >= 200) {
-            // Large Widget (Tall/Expanded): Donut + Stocks + Task Box + 2x2 KPI Cards
-            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_pills_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_rows_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_task_box, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_kpi_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_btn_open, View.VISIBLE);
+        boolean isTiny = effectiveHeight > 0 && effectiveHeight < 80;
+        boolean isShort = effectiveHeight > 0 && effectiveHeight < 140;
 
-            // Populate 2x2 KPI cards
-            views.setTextViewText(R.id.widget_kpi_balance, String.format(Locale.US, "%,d USD", nominalBalance));
-            views.setTextViewText(R.id.widget_kpi_total_items, totalItems + " Items");
-            views.setTextViewText(R.id.widget_kpi_revenue, String.format(Locale.US, "%,d USD", nominalRevenue));
-            views.setTextViewText(R.id.widget_kpi_tasks, tasksCount + " Tasks");
-            views.setTextViewText(R.id.widget_kpi_tasks_badge, tasksCount == 0 ? "✓ Clear" : "Pending");
-        } else if (minHeight >= 115) {
-            // Medium Widget: Donut + Stocks + Task Aim Banner
-            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_pills_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_rows_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_task_box, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_kpi_container, View.GONE);
-            views.setViewVisibility(R.id.widget_btn_open, minHeight >= 155 ? View.VISIBLE : View.GONE);
-        } else if (minHeight > 0) {
-            // Small/Compact Widget: Donut + Compact elements
-            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_pills_container, View.GONE);
-            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_rows_container, minWidth >= 170 ? View.VISIBLE : View.GONE);
-            views.setViewVisibility(R.id.widget_task_box, View.GONE);
-            views.setViewVisibility(R.id.widget_kpi_container, View.GONE);
-            views.setViewVisibility(R.id.widget_btn_open, View.GONE);
-        } else {
-            // Default when launcher hasn't supplied dimensions yet
-            views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_pills_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_rows_container, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_task_box, View.VISIBLE);
-            views.setViewVisibility(R.id.widget_kpi_container, View.GONE);
-            views.setViewVisibility(R.id.widget_btn_open, View.VISIBLE);
-        }
+        views.setViewVisibility(R.id.widget_header_container, View.VISIBLE);
+        views.setViewVisibility(R.id.widget_main_analytics_container, View.VISIBLE);
+        views.setViewVisibility(R.id.widget_rows_container, View.VISIBLE);
+        views.setViewVisibility(R.id.widget_pills_container, isTiny ? View.GONE : View.VISIBLE);
+        views.setViewVisibility(R.id.widget_task_box, isTiny ? View.GONE : View.VISIBLE);
+        views.setViewVisibility(R.id.widget_kpi_container, isShort ? View.GONE : View.VISIBLE);
+        views.setViewVisibility(R.id.widget_btn_open, isTiny ? View.GONE : View.VISIBLE);
+
+        // Populate 2x2 KPI cards to use free space dynamically
+        views.setTextViewText(R.id.widget_kpi_balance, String.format(Locale.US, "%,d USD", nominalBalance));
+        views.setTextViewText(R.id.widget_kpi_total_items, totalItems + " Items");
+        views.setTextViewText(R.id.widget_kpi_revenue, String.format(Locale.US, "%,d USD", nominalRevenue));
+        views.setTextViewText(R.id.widget_kpi_tasks, tasksCount + " Tasks");
+        views.setTextViewText(R.id.widget_kpi_tasks_badge, tasksCount == 0 ? "✓ Clear" : "Pending");
 
         // Update Date Category Tabs (1W, 1M, 3W, YTD, Total)
         String[] periods = {"1W", "1M", "3W", "YTD", "Total"};
@@ -184,7 +157,9 @@ public class StockWidgetProvider extends AppWidgetProvider {
         };
 
         int mutedColor = isDark ? Color.parseColor("#94a3b8") : Color.parseColor("#64748b");
-        int activeColor = isDark ? Color.parseColor("#f8fafc") : Color.parseColor("#0f172a");
+        // Always dark high-contrast text on both white and cyan active pills
+        int activeColor = Color.parseColor("#0f172a");
+        int activePillBg = isDark ? R.drawable.widget_tab_active_pill_dark : R.drawable.widget_tab_active_pill;
 
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -197,7 +172,7 @@ public class StockWidgetProvider extends AppWidgetProvider {
             boolean isSelected = p.equalsIgnoreCase(activePeriod);
 
             if (isSelected) {
-                views.setInt(tid, "setBackgroundResource", R.drawable.widget_tab_active_pill);
+                views.setInt(tid, "setBackgroundResource", activePillBg);
                 views.setTextColor(tid, activeColor);
             } else {
                 views.setInt(tid, "setBackgroundResource", 0);
